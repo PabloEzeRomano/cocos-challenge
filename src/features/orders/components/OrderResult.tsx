@@ -5,6 +5,7 @@ import { OrderResponse, OrderSide, OrderType } from '../../../types/api';
 import { useTheme } from '../../../theme/useTheme';
 import { useTranslation } from '../../../i18n/useTranslation';
 import { Badge } from '../../../components/Badge';
+import { SummaryRow } from '../../../components/SummaryRow';
 import { formatCurrency } from '../../../utils/format';
 
 interface OrderResultProps {
@@ -25,16 +26,6 @@ function CheckIcon({ color, size = 36 }: { color: string; size?: number }) {
   );
 }
 
-function SummaryRow({ label, value, last }: { label: string; value: React.ReactNode; last?: boolean }) {
-  const { colors } = useTheme();
-  return (
-    <View style={[styles.summaryRow, last && { borderTopWidth: 1, borderTopColor: colors.border, marginTop: 2 }]}>
-      <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>{label}</Text>
-      <View>{typeof value === 'string' ? <Text style={[styles.summaryValue, { color: colors.text }]}>{value}</Text> : value}</View>
-    </View>
-  );
-}
-
 export function OrderResult({ response, side, ticker, qty, orderType, total, onClose }: OrderResultProps) {
   const { colors, radius } = useTheme();
   const { t } = useTranslation();
@@ -46,7 +37,6 @@ export function OrderResult({ response, side, ticker, qty, orderType, total, onC
   const statusLabel = t(`order.${statusKey}`);
   const shares = qty === 1 ? t('order.share') : t('order.shares');
   const sideNoun = side === 'BUY' ? t('order.buyNoun') : t('order.sellNoun');
-  const description = `${sideNoun} ${t('order.ofShares')} ${qty} ${shares} ${t('order.ofShares')} ${ticker}`;
 
   // Commission display
   const commission = Math.round(total * 0.005);
@@ -64,7 +54,7 @@ export function OrderResult({ response, side, ticker, qty, orderType, total, onC
 
       {/* Description */}
       <Text style={[styles.description, { color: colors.textSecondary }]}>
-        {sideNoun} {qty} {shares} {t('order.ofShares')} {ticker}
+        {sideNoun} {t('order.ofShares')} {qty} {shares} {t('order.ofShares')} {ticker}
       </Text>
 
       {/* Summary card */}
@@ -125,19 +115,6 @@ const styles = StyleSheet.create({
     marginTop: 22,
     paddingHorizontal: 18,
     paddingVertical: 4,
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 11,
-  },
-  summaryLabel: {
-    fontSize: 13.5,
-  },
-  summaryValue: {
-    fontSize: 13.5,
-    fontWeight: '600',
   },
   totalValue: {
     fontSize: 18,

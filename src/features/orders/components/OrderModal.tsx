@@ -10,22 +10,13 @@ import { aggregatePositions } from '../../portfolio/utils/aggregation';
 import { buildOrderPayload } from '../utils/payloads';
 import { formatCurrency } from '../../../utils/format';
 import { Avatar } from '../../../components/Avatar';
+import { SummaryRow } from '../../../components/SummaryRow';
 import { useOrderHistoryStore } from '../../../store/orderHistory';
 
 interface OrderModalProps {
   visible: boolean;
   instrument: Instrument | null;
   onClose: () => void;
-}
-
-function SummaryRow({ label, value, last }: { label: React.ReactNode; value: React.ReactNode; last?: boolean }) {
-  const { colors } = useTheme();
-  return (
-    <View style={[styles.summaryRow, last && { borderTopWidth: 1, borderTopColor: colors.border, marginTop: 2 }]}>
-      <View>{typeof label === 'string' ? <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>{label}</Text> : label}</View>
-      <View>{typeof value === 'string' ? <Text style={[styles.summaryValue, { color: colors.text }]}>{value}</Text> : value}</View>
-    </View>
-  );
 }
 
 export function OrderModal({ visible, instrument, onClose }: OrderModalProps) {
@@ -185,7 +176,7 @@ export function OrderModal({ visible, instrument, onClose }: OrderModalProps) {
                       accessibilityRole="tab"
                       accessibilityState={{ selected: side === s }}
                       accessibilityLabel={s === 'BUY' ? t('order.buy') : t('order.sell')}>
-                      <Text style={[styles.segText, { color: side === s ? (s === 'BUY' ? '#04150F' : '#fff') : colors.textSecondary }]}>
+                      <Text style={[styles.segText, { color: side === s ? (s === 'BUY' ? colors.buyText : colors.sellText) : colors.textSecondary }]}>
                         {s === 'BUY' ? t('order.buy') : t('order.sell')}
                       </Text>
                     </Pressable>
@@ -322,7 +313,7 @@ export function OrderModal({ visible, instrument, onClose }: OrderModalProps) {
                   accessibilityLabel={`${side === 'BUY' ? t('order.buy') : t('order.sell')} ${qty} ${shares} of ${instrument.ticker} for ${formatCurrency(total)}`}
                   accessibilityState={{ disabled: !isValid || mutation.isPending }}
                 >
-                  <Text style={[styles.submitText, { color: side === 'BUY' ? '#04150F' : '#fff' }]}>
+                  <Text style={[styles.submitText, { color: side === 'BUY' ? colors.buyText : colors.sellText }]}>
                     {mutation.isPending ? t('order.sending') : `${side === 'BUY' ? t('order.buy') : t('order.sell')} ${instrument.ticker}`}
                   </Text>
                 </Pressable>
@@ -365,9 +356,6 @@ const styles = StyleSheet.create({
   limitLabel: { fontSize: 14 },
   limitInput: { fontSize: 16, fontWeight: '600', textAlign: 'right', minWidth: 80, padding: 0 },
   summaryCard: { borderWidth: 1, marginTop: 16, marginBottom: 14, paddingHorizontal: 16, paddingVertical: 4 },
-  summaryRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 11 },
-  summaryLabel: { fontSize: 13.5 },
-  summaryValue: { fontSize: 13.5, fontWeight: '600', fontVariant: ['tabular-nums'] },
   summaryLabelBold: { fontSize: 13.5, fontWeight: '600' },
   totalValueText: { fontSize: 18, fontWeight: '700', fontVariant: ['tabular-nums'] },
   footer: { borderTopWidth: 1, paddingHorizontal: 22, paddingTop: 10, paddingBottom: 6 },
