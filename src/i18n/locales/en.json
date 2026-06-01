@@ -11,7 +11,16 @@
     "searching": "Searching..."
   },
   "instruments": {
-    "title": "Market"
+    "title": "Market",
+    "all": "All",
+    "watchlist": "Watchlist"
+  },
+  "detail": {
+    "today": "today",
+    "open": "Open",
+    "last": "Last",
+    "change": "Change",
+    "type": "Type"
   },
   "portfolio": {
     "title": "Portfolio",

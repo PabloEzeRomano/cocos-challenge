@@ -11,7 +11,16 @@
     "searching": "Buscando..."
   },
   "instruments": {
-    "title": "Mercado"
+    "title": "Mercado",
+    "all": "Todos",
+    "watchlist": "Favoritos"
+  },
+  "detail": {
+    "today": "hoy",
+    "open": "Apertura",
+    "last": "Último",
+    "change": "Variación",
+    "type": "Tipo"
   },
   "portfolio": {
     "title": "Portafolio",
