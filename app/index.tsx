@@ -16,7 +16,7 @@ import { SettingsHeader } from '../src/components/SettingsHeader';
 type TabKey = 'instruments' | 'portfolio' | 'orders';
 
 export default function HomeScreen() {
-  const { colors, spacing } = useTheme();
+  const { colors } = useTheme();
   const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState<TabKey>('instruments');
@@ -38,6 +38,11 @@ export default function HomeScreen() {
     setSearchQuery('');
   }, []);
 
+  const handlePositionPress = useCallback((instrument: Instrument) => {
+    setSelectedInstrument(instrument);
+    setOrderModalVisible(true);
+  }, []);
+
   const tabs = [
     { key: 'instruments', label: t('tabs.instruments') },
     { key: 'portfolio', label: t('tabs.portfolio') },
@@ -48,15 +53,14 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.bg }]} edges={['top']}>
+      <SettingsHeader />
+
       {activeTab === 'instruments' && (
-        <>
-          <SettingsHeader />
-          <SearchBar
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            onClear={handleClearSearch}
-          />
-        </>
+        <SearchBar
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          onClear={handleClearSearch}
+        />
       )}
 
       <View style={styles.content}>
@@ -65,7 +69,7 @@ export default function HomeScreen() {
         ) : activeTab === 'instruments' ? (
           <InstrumentList onInstrumentPress={handleInstrumentPress} />
         ) : activeTab === 'portfolio' ? (
-          <PortfolioList onPositionPress={handleInstrumentPress} />
+          <PortfolioList onPositionPress={handlePositionPress} />
         ) : (
           <OrderHistoryList />
         )}

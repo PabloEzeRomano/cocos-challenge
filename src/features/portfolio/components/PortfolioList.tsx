@@ -68,6 +68,7 @@ export function PortfolioList({ onPositionPress }: PortfolioListProps) {
       ListHeaderComponent={
         <View>
           <PortfolioSummaryHeader summary={summary} cashBalance={cashPosition?.marketValue ?? 0} totalCost={totalCost} />
+
           <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>
             {t('portfolio.positions').toUpperCase()} · {positions.length}
           </Text>

@@ -39,7 +39,7 @@ export function SearchBar({ value, onChangeText, onClear }: SearchBarProps) {
           accessibilityLabel={t('search.placeholder')}
         />
         {value.length > 0 && (
-          <Pressable onPress={onClear} style={styles.clearBtn} hitSlop={8}>
+          <Pressable onPress={onClear} style={styles.clearBtn} hitSlop={8} accessibilityRole="button" accessibilityLabel="Clear search">
             <Svg width={16} height={16} viewBox="0 0 18 18" fill="none">
               <Path d="M4 4l10 10M14 4L4 14" stroke={colors.textMuted} strokeWidth={1.8} strokeLinecap="round" />
             </Svg>

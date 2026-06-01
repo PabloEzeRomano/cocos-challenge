@@ -25,7 +25,8 @@ export const PortfolioPositionCard = memo(function PortfolioPositionCard({
       onPress={() => onPress(position)}
       style={[styles.container, showBorder && { borderTopWidth: 1, borderTopColor: colors.border }]}
       accessibilityRole="button"
-      accessibilityLabel={`${position.ticker} ${formatQuantity(position.totalQuantity)} ${shares}`}
+      accessibilityLabel={`${position.ticker}, ${formatQuantity(position.totalQuantity)} ${shares}, value ${formatCurrency(position.marketValue)}, ${isPositive ? 'up' : 'down'} ${Math.abs(position.returnPct).toFixed(1)} percent`}
+      accessibilityHint="Double tap to trade"
     >
       <Avatar ticker={position.ticker} />
 

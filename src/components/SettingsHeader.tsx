@@ -40,7 +40,6 @@ function StarIcon({ color }: { color: string }) {
 
 export function SettingsHeader() {
   const { colors, spacing, radius, isDark } = useTheme();
-  const theme = usePreferencesStore((s) => s.theme);
   const locale = usePreferencesStore((s) => s.locale);
   const setTheme = usePreferencesStore((s) => s.setTheme);
   const setLocale = usePreferencesStore((s) => s.setLocale);
