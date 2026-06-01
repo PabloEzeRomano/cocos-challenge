@@ -22,6 +22,8 @@ export const colors = {
     accent: '#11151B',
     accentText: '#FFFFFF',
     accentSoft: 'rgba(17,21,27,0.06)',
+    buyText: '#04150F',
+    sellText: '#FFFFFF',
   },
   dark: {
     bg: '#0B0E13',
@@ -46,6 +48,8 @@ export const colors = {
     accent: '#F3F5F8',
     accentText: '#0B0E13',
     accentSoft: 'rgba(243,245,248,0.10)',
+    buyText: '#04150F',
+    sellText: '#FFFFFF',
   },
 } as const;
 
@@ -60,6 +64,7 @@ export const spacing = {
   '4xl': 32,
   '5xl': 40,
   '6xl': 48,
+  screenH: 22,
 } as const;
 
 export const typography = {
