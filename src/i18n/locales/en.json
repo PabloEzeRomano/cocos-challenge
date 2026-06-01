@@ -1,0 +1,68 @@
+{
+  "tabs": {
+    "instruments": "Instruments",
+    "portfolio": "Portfolio"
+  },
+  "search": {
+    "placeholder": "Search by ticker...",
+    "empty": "No results found",
+    "searching": "Searching..."
+  },
+  "instruments": {
+    "title": "Instruments",
+    "return": "Return"
+  },
+  "portfolio": {
+    "title": "Portfolio",
+    "totalValue": "Total value",
+    "totalPnL": "Profit/Loss",
+    "totalReturn": "Total return",
+    "quantity": "Quantity",
+    "marketValue": "Market value",
+    "avgCost": "Avg cost",
+    "cash": "Cash"
+  },
+  "order": {
+    "title": "New order",
+    "buy": "Buy",
+    "sell": "Sell",
+    "market": "Market",
+    "limit": "Limit",
+    "quantity": "Quantity",
+    "amount": "Amount (ARS)",
+    "price": "Limit price",
+    "shares": "shares",
+    "submit": "Submit order",
+    "success": "Order submitted",
+    "orderId": "Order ID",
+    "status": "Status",
+    "filled": "Filled",
+    "pending": "Pending",
+    "rejected": "Rejected",
+    "tryAgain": "Try again",
+    "close": "Close",
+    "inputMode": {
+      "quantity": "Quantity",
+      "amount": "Amount"
+    },
+    "validation": {
+      "quantityRequired": "Enter a valid quantity",
+      "quantityInteger": "Only whole shares allowed",
+      "priceRequired": "Enter a valid price",
+      "amountMinimum": "Minimum amount is one share price"
+    },
+    "summary": {
+      "side": "Side",
+      "type": "Type",
+      "quantity": "Quantity",
+      "estimatedTotal": "Estimated total",
+      "limitPrice": "Limit price"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "pullToRefresh": "Pull to refresh"
+  }
+}

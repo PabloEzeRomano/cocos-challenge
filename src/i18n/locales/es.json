@@ -1,0 +1,68 @@
+{
+  "tabs": {
+    "instruments": "Instrumentos",
+    "portfolio": "Portafolio"
+  },
+  "search": {
+    "placeholder": "Buscar por ticker...",
+    "empty": "No se encontraron resultados",
+    "searching": "Buscando..."
+  },
+  "instruments": {
+    "title": "Instrumentos",
+    "return": "Retorno"
+  },
+  "portfolio": {
+    "title": "Portafolio",
+    "totalValue": "Valor total",
+    "totalPnL": "Ganancia/Pérdida",
+    "totalReturn": "Retorno total",
+    "quantity": "Cantidad",
+    "marketValue": "Valor de mercado",
+    "avgCost": "Costo promedio",
+    "cash": "Efectivo"
+  },
+  "order": {
+    "title": "Nueva orden",
+    "buy": "Comprar",
+    "sell": "Vender",
+    "market": "Mercado",
+    "limit": "Límite",
+    "quantity": "Cantidad",
+    "amount": "Monto (ARS)",
+    "price": "Precio límite",
+    "shares": "acciones",
+    "submit": "Enviar orden",
+    "success": "Orden enviada",
+    "orderId": "ID de orden",
+    "status": "Estado",
+    "filled": "Ejecutada",
+    "pending": "Pendiente",
+    "rejected": "Rechazada",
+    "tryAgain": "Intentar de nuevo",
+    "close": "Cerrar",
+    "inputMode": {
+      "quantity": "Cantidad",
+      "amount": "Monto"
+    },
+    "validation": {
+      "quantityRequired": "Ingrese una cantidad válida",
+      "quantityInteger": "Solo se permiten acciones enteras",
+      "priceRequired": "Ingrese un precio válido",
+      "amountMinimum": "El monto mínimo es el precio de una acción"
+    },
+    "summary": {
+      "side": "Operación",
+      "type": "Tipo",
+      "quantity": "Cantidad",
+      "estimatedTotal": "Total estimado",
+      "limitPrice": "Precio límite"
+    }
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "retry": "Reintentar",
+    "pullToRefresh": "Desliza para actualizar"
+  }
+}
