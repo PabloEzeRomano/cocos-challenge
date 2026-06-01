@@ -62,6 +62,7 @@
     "max": "Max",
     "enterAmount": "Enter an amount to continue",
     "insufficient": "Insufficient balance",
+    "insufficientShares": "Insufficient shares",
     "available": "Available",
     "validation": {
       "quantityRequired": "Enter a valid quantity",

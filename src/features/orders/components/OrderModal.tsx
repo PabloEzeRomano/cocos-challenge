@@ -27,12 +27,16 @@ export function OrderModal({ visible, instrument, onClose }: OrderModalProps) {
   const { data: portfolioData } = usePortfolio();
   const inputRef = useRef<TextInput>(null);
 
-  const cashBalance = useMemo(() => {
-    if (!portfolioData) return 0;
+  const { cashBalance, availableShares } = useMemo(() => {
+    if (!portfolioData) return { cashBalance: 0, availableShares: 0 };
     const positions = aggregatePositions(portfolioData);
     const cash = positions.find((p) => p.isCash);
-    return cash?.marketValue ?? 0;
-  }, [portfolioData]);
+    const position = positions.find((p) => p.instrumentId === instrument?.id);
+    return {
+      cashBalance: cash?.marketValue ?? 0,
+      availableShares: position?.totalQuantity ?? 0,
+    };
+  }, [portfolioData, instrument?.id]);
 
   const [side, setSide] = useState<OrderSide>('BUY');
   const [orderType, setOrderType] = useState<OrderType>('MARKET');
@@ -74,12 +78,16 @@ export function OrderModal({ visible, instrument, onClose }: OrderModalProps) {
   const total = side === 'BUY' ? notional + commission : notional - commission;
 
   const isValid = qty > 0;
-  const insufficientFunds = side === 'BUY' && total > cashBalance && cashBalance > 0;
+  const insufficientFunds = side === 'BUY' && total > cashBalance;
+  const insufficientShares = side === 'SELL' && qty > availableShares;
+  const hasWarning = insufficientFunds || insufficientShares;
   const hint = !isValid
     ? t('order.enterAmount')
     : insufficientFunds
       ? `${t('order.insufficient')} · ${t('order.available')}: ${formatCurrency(cashBalance)}`
-      : '';
+      : insufficientShares
+        ? `${t('order.insufficientShares')} · ${t('order.available')}: ${availableShares} ${availableShares === 1 ? t('order.share') : t('order.shares')}`
+        : '';
 
   const handleQuick = (val: number) => {
     setValue(String(val));
@@ -295,7 +303,7 @@ export function OrderModal({ visible, instrument, onClose }: OrderModalProps) {
               {/* Footer */}
               <View style={[styles.footer, { borderTopColor: colors.border, backgroundColor: colors.bg }]}>
                 <View style={[styles.hintRow, { minHeight: 16 }]}>
-                  <Text style={[styles.hintText, { color: colors.textMuted }]}>{hint}</Text>
+                  <Text style={[styles.hintText, { color: hasWarning ? colors.negative : colors.textMuted }]}>{hint}</Text>
                 </View>
 
                 <Pressable

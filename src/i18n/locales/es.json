@@ -62,6 +62,7 @@
     "max": "Máx",
     "enterAmount": "Ingresá una cantidad para continuar",
     "insufficient": "Saldo insuficiente",
+    "insufficientShares": "Acciones insuficientes",
     "available": "Disponible",
     "validation": {
       "quantityRequired": "Ingresá una cantidad válida",
