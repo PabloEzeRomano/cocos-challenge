@@ -1,265 +1,148 @@
-# Austral Trading App
+# Cocos Trading App
 
-A React Native fintech/trading app for the Argentine stock market. Consumes real-time instrument data, portfolio positions, and supports order placement (BUY/SELL, MARKET/LIMIT). Inspired by the simplicity of Coinbase and Robinhood, with a focus on financial clarity over visual noise.
+> 📝 Este README está en castellano porque el proceso de entrevistas se realiza íntegramente en español. [English version here](./README_EN.md).
 
-> **Branding**: App is branded "Austral" with a star icon. Header uses icon-only buttons for theme toggle (sun/moon) and locale switch (globe + code).
-
-## Screenshots
-
-> Run the app locally to see the full experience. Key screens: Instruments list with sparklines, Portfolio with aggregated P&L, debounced search, and bottom-sheet order modal.
+App de trading en React Native para el mercado bursátil argentino. Muestra instrumentos con precios en tiempo real, posiciones del portafolio con ganancia/pérdida, búsqueda con debounce, y envío de órdenes (BUY/SELL, MARKET/LIMIT). Inspirada en Coinbase y Robinhood. Enfocada en claridad financiera por sobre ruido visual.
 
 ## Quick Start
 
 ```bash
-# Prerequisites: Node.js >= 18, Expo Go on your device
+# Prerequisitos: Node.js >= 18, Expo Go en tu dispositivo
 npm install
 npm start
-# Scan QR with Expo Go (iOS/Android) or press 'i' for iOS simulator
+# Escaneá el QR con Expo Go o seguí las instrucciones para desarrollo local
 ```
 
-Run tests:
 ```bash
-npm test
+npm test  # 42 unit tests
 ```
 
-## Stack Choices
+## Stack
 
-| Technology | Why |
+| Tecnología | Por qué |
 |---|---|
-| **Expo + Expo Router** | Zero-config native builds, file-based routing, fast iteration. The managed workflow avoids native toolchain complexity that adds no value for this scope. |
-| **TypeScript** | Non-negotiable for financial logic. Catches calculation errors at compile time. |
-| **TanStack Query** | Declarative server state with built-in caching, refetching, and loading/error states. Eliminates hand-rolled async boilerplate. |
-| **Zustand** | Minimal global state (theme + locale only). No Redux ceremony for two persisted preferences. |
-| **Axios** | Typed HTTP client with interceptors if needed. Simpler than raw fetch for consistent error handling. |
-| **react-native-svg** | Lightweight sparkline charts. No heavy charting library for a non-interactive mini visualization. |
-| **Plain RN styles** | Full control, zero abstraction overhead. Design tokens provide consistency without a framework. |
+| **Expo + Expo Router** | Builds nativos sin configuración, routing basado en archivos. El workflow managed evita complejidad de toolchain nativo. |
+| **TypeScript** | Innegociable para lógica financiera. Atrapa errores de cálculo en tiempo de compilación. |
+| **TanStack Query** | Estado del servidor con cache, refetching, estados de carga/error. Reemplaza boilerplate async manual. |
+| **Zustand** | Estado global liviano para theme, locale, watchlist e historial de órdenes (~30 líneas por store). |
+| **Axios** | Cliente HTTP tipado. Más simple que fetch para manejo consistente de errores. |
+| **react-native-svg** | Sparklines sin necesidad de una librería de charts pesada. |
+| **Estilos nativos de RN** | Control total sobre la presentación de datos financieros. Design tokens dan consistencia sin framework. |
 
-### Why NOT
-
-- **Redux/MobX**: Disproportionate complexity. TanStack Query handles server state; Zustand covers the rest in ~20 lines.
-- **UI frameworks (Paper, Tamagui, NativeBase)**: Add bundle weight and fight their opinions. For a fintech app, owning the UI layer means precise control over financial data presentation.
-- **i18n libraries (react-i18next)**: A JSON dictionary + context hook is ~40 lines. No need for ICU message format, pluralization engines, or namespace systems at this scale.
-- **Full offline-first architecture**: TanStack Query's cache provides pragmatic offline resilience. Building a proper sync layer is weeks of work for a take-home.
-
-## Architecture
+## Arquitectura
 
 ```
-app/                          # Expo Router (file-based routing)
-  _layout.tsx                 # Root layout: providers (Query, Theme, I18n)
-  index.tsx                   # Main screen: search + tabs + order modal
 src/
   features/
-    instruments/              # Instrument list, cards, sparklines
-    portfolio/                # Position aggregation, P&L calculations
-    orders/                   # Order modal, form, validation, result
-    search/                   # Debounced search bar + results
-  components/                 # Shared: Skeleton, ErrorState, EmptyState, TabBar, Avatar, BalanceChart, Sparkline
-  services/api.ts             # Axios client + typed endpoint functions
-  hooks/useDebounce.ts        # Generic debounce hook
-  store/preferences.ts        # Zustand: theme + locale (persisted)
-  store/orderHistory.ts       # Zustand: local order history (persisted)
-  theme/                      # Design tokens, ThemeProvider, useTheme
-  i18n/                       # Translation provider, dictionaries (es/en)
-  utils/format.ts             # Currency, percentage, quantity formatters
-  types/api.ts                # Shared API type definitions
+    instruments/          # Lista, cards, sparklines, filtrado por watchlist
+    portfolio/            # Agregación de posiciones, P&L, resumen
+    orders/               # Modal, formulario, validación, resultado, historial
+    search/               # Barra de búsqueda con debounce + resultados
+  components/             # Compartidos: Skeleton, ErrorState, EmptyState, TabBar, Avatar, Sparkline
+  hooks/useDebounce.ts    # Hook genérico de debouncex
+  services/api.ts         # Cliente Axios + funciones de endpoint tipadas
+  store/                  # Zustand: preferences, watchlist, orderHistory, safeStorage
+  theme/                  # Design tokens (colores semánticos, spacing, tipografía, radius)
+  i18n/                   # Diccionarios JSON (es/en) + context provider
+  utils/format.ts         # Formateadores de moneda, porcentaje, cantidad
+  types/api.ts            # Tipos compartidos de la API
 ```
 
-### Why Feature-Based
+**Feature-based**: cada feature es dueña de sus componentes, hooks y utils. Agregar una feature no toca código existente; borrar una es eliminar un solo directorio.
 
-Each feature owns its components, hooks, utils, and types. This means:
-- Adding a new feature doesn't touch existing code
-- Deleting a feature is a single directory removal
-- Related code lives together (no hunting across `components/`, `hooks/`, `utils/` for one feature)
+## Decisiones Clave
 
-**Alternative considered**: Layer-based (`components/`, `hooks/`, `services/`). Rejected because it scatters domain logic across directories and couples unrelated features through shared folders.
+### Agregación de Posiciones del Portafolio
 
-## Technical Decisions
+La API devuelve tickers duplicados (ej: MOLA ×2 con distinto `avg_cost_price`) representando múltiples lotes de compra. La app agrega por ticker: suma cantidades, calcula costo promedio ponderado, y deriva valor de mercado / P&L desde ahí. Es el enfoque estándar de cualquier broker.
 
-### Single-Screen Architecture
+### Manejo de ARS (Efectivo)
 
-The app uses one screen with three tabs (Market/Portfolio/Orders) and a search overlay. This mirrors how Robinhood and Coinbase handle their core trading views — the user's mental model is "I'm looking at the market" with different lenses.
+El portafolio incluye una entrada ARS con `avg_cost_price=99.9` pero `last_price=1` (claramente efectivo, no una posición). Se muestra como fila "Efectivo" sin cálculos de P&L, excluida de retornos, no se puede operar.
 
-**Tab bar**: Fixed at bottom (global), always visible. Only the Market tab shows the search bar and header. The Orders tab provides local history. This is a standard mobile fintech pattern.
+### Sparklines
 
-**Alternative**: Multi-screen navigation with stack. Rejected because separate screens add navigation complexity without UX benefit. The user never needs a "back" button in this flow.
+Determinísticos, con seed derivado del string del ticker, mismo ticker siempre renderiza la misma forma. Interpola de `close_price` a `last_price` con ruido controlado. La API solo provee dos data points, así que charts históricos reales no son posibles. El sparkline brinda contexto direccional, que es su propósito.
 
-### Portfolio Position Aggregation
+### Formulario de Órdenes
 
-The API returns duplicate tickers (e.g., MOLA appears twice with different `avg_cost_price`). These represent multiple purchase lots. The app aggregates them:
-- **Quantity**: Sum of all lots
-- **Weighted avg cost**: `Σ(quantity_i × avg_cost_price_i) / Σ(quantity_i)`
-- **Market value**: `total_quantity × last_price`
-- **P&L**: `market_value - cost_basis`
+Dos modos de input: cantidad exacta o monto en ARS (auto-calcula `Math.floor(monto / last_price)`). No se permiten fracciones de acciones. Órdenes LIMIT muestran campo de precio; MARKET lo oculta. Validación de saldo disponible avisa cuando los fondos son insuficientes.
 
-This is the standard brokerage approach. Showing individual lots would confuse users and isn't how retail trading apps present positions.
+### Historial de Órdenes (Local)
 
-### ARS Cash Handling
+Persistido con Zustand + AsyncStorage. La API no tiene endpoint de historial, así que el almacenamiento local da feedback inmediato de "mis órdenes". Sobrevive al reinicio de la app, no a la reinstalación.
 
-The portfolio contains an ARS entry with `avg_cost_price=99.9` but `last_price=1`. This is clearly a cash balance, not an investable position. The app:
-- Displays it as a "Cash" row without P&L calculations
-- Uses `quantity × 1` as the display value
-- Excludes it from return calculations
-- Makes it non-tappable (can't trade cash)
+### Theme
 
-### Sparkline Implementation
+Sistema de tokens semánticos (light/dark). Jerarquía de fondos (`bg` → `surface` → `surfaceModal`), jerarquía de texto, colores financieros semánticos (`positive`/`negative`), y tokens interactivos. Sin shadows, inconsistentes cross-platform y agregan ruido a UIs financieras.
 
-Deterministic sparklines seeded from the ticker string. Same ticker always produces the same chart shape. Points interpolate from `close_price` to `last_price` with controlled noise for realism.
+### i18n Sin Librería Externa
 
-**Why deterministic**: Random sparklines would change on every re-render, creating a chaotic visual experience. Seeded PRNG ensures visual stability.
+Diccionarios JSON + React context + función `t()`, ~40 líneas. Default: español. Soporta keys anidadas. Sin librería externa. Adoptaría `react-i18next` solo cuando se necesite pluralización/formato ICU.
 
-**Why not real data**: The API provides only two data points (close, last). A realistic chart would need historical OHLCV data. The sparkline provides directional context, which is its purpose.
+### Manejo de Estado
 
-### Order Form Design
-
-The modal supports two input modes:
-1. **Quantity mode**: Enter exact number of whole shares
-2. **Amount mode**: Enter ARS amount, auto-calculates maximum whole shares via `Math.floor(amount / last_price)`
-
-Fractional shares are explicitly disallowed. The estimated total updates live as the user types.
-
-**Native keyboard over custom keypad**: The original implementation used a custom in-app numpad. Replaced with native `TextInput` + `keyboardType="number-pad"` for better accessibility, OS-level input handling (autocomplete, clipboard), and less code to maintain.
-
-### Order History (Local)
-
-Completed orders are persisted locally via Zustand + AsyncStorage. Stored as a separate `cocos-order-history` key. Each entry captures: ticker, side, type, quantity, price, total, status, and timestamp.
-
-**Why local-only**: The API has no order history endpoint. Local storage provides immediate UX feedback ("my orders") without a backend dependency. Orders survive app restart but not reinstall. No sync between devices — acceptable trade-off for a challenge scope.
-
-### Portfolio Chart (Derived Data)
-
-The `BalanceChart` generates a deterministic value curve from `totalCost → totalValue` using a seeded PRNG with realistic volatility scaling. The chart is visually stable across re-renders (same inputs = same curve) but does not represent real historical data.
-
-**Why not a static shape**: The original chart was hardcoded. Deriving from actual portfolio data means the chart direction, amplitude, and shape reflect the user's real P&L ratio — positive portfolios trend up, negative trend down, with proportional volatility.
-
-### Theme System (Redesigned)
-
-Complete design system overhaul from generic tokens to semantic, purpose-driven naming:
-
-- **Background hierarchy**: `bg` → `bgElevated` → `surface` → `surface2` → `surfaceModal`
-- **Text hierarchy**: `text` → `textSecondary` → `textMuted` → `textInverse`
-- **Semantic colors**: `positive`/`positiveBg`, `negative`/`negativeBg`, `warn`/`warnBg`
-- **Interactive**: `accent` → `accentText` → `accentSoft`
-- **Utility**: `border`, `borderStrong`, `field`, `overlay`
-- **Numeric typography**: Added `numLg` (46px) and `numMd` (22px) variants for price/amount displays
-- **Radius tokens**: Semantic naming (`badge`, `input`, `button`, `card`, `sheet`, `chip`) instead of size-based (`sm`, `md`, `lg`)
-
-Dropped the `shadows` object entirely — React Native shadow behavior is inconsistent cross-platform and adds visual noise to a financial app that benefits from flat, high-contrast surfaces.
-
-**Why not more tokens**: Financial data readability depends on contrast, not color variety. More tokens = more maintenance with no UX benefit.
-
-### i18n Without a Library
-
-A JSON dictionary + React context + `t()` function. Default locale: Spanish (Argentine market). English available.
-
-The entire implementation is ~40 lines. It supports:
-- Nested key access (`t('order.validation.quantityRequired')`)
-- Locale switching persisted via Zustand/AsyncStorage
-
-**When this breaks down**: Pluralization, ICU message format, dynamic interpolation with gender/number agreement. At that point, adopt `react-i18next`. Not before.
-
-### State Management Strategy
-
-| What | Where | Why |
+| Estado | Solución | Razón |
 |---|---|---|
-| Instrument/portfolio data | TanStack Query | Server state with caching, refetching, stale tracking |
-| Search results | TanStack Query (debounced key) | Same benefits + automatic cancellation |
-| Order submission | TanStack Query mutation | Loading/success/error states for free |
-| Form inputs | `useState` | Ephemeral, component-scoped, no sharing needed |
-| Modal visibility | `useState` | Same |
-| Theme + locale | Zustand + AsyncStorage | Persisted across sessions, accessed from multiple components |
-| Order history | Zustand + AsyncStorage | Local persistence, no backend dependency |
+| Datos del servidor | TanStack Query | Cache, refetching, tracking de stale |
+| Búsqueda | TanStack Query (key con debounce) | Auto-cancelación en nuevas queries |
+| Órdenes | TanStack Query mutation | Loading/success/error gratis |
+| Inputs del form, modal | `useState` | Efímeros, scoped al componente |
+| Theme, locale, watchlist, historial | Zustand + AsyncStorage | Persistidos, compartidos entre componentes |
 
-Both Zustand stores use a resilient `safeStorage` wrapper that silently falls back to no-op if the AsyncStorage native module is missing (web compatibility).
+Todos los stores de Zustand usan un wrapper `safeStorage` compartido que hace fallback a no-op si AsyncStorage no está disponible (compatibilidad web).
+
+## Testing
+
+Los tests se enfocan exclusivamente en lógica financiera crítica:
+
+| Módulo | Por qué |
+|---|---|
+| `aggregation.ts` | Promedio ponderado incorrecto = plata mal mostrada en pantalla |
+| `validation.ts` | Órdenes inválidas desperdician llamadas a la API y confunden al usuario |
+| `payloads.ts` | Payload con forma incorrecta = rechazo de la API |
+| `format.ts` | Edge cases: 0, negativos, números grandes, formateo de locale |
+| `sparkline.ts` | Debe ser determinístico, charts random = caos visual |
+
+**No testeado**: rendering de componentes (costo de setup de mocks > valor), llamadas a la API (mockear no testea comportamiento real), navegación (pantalla única).
 
 ## Trade-offs
 
-### What was intentionally simplified
+- **Sin WebSocket**: la API es REST-only. Agregar `refetchInterval` sería trivial.
+- **Sin librería de charts**: sparklines via SVG. Una app real usaría Victory o similar para charts de velas.
+- **Sin auth**: la API es pública. Auth implicaría flujo de login + manejo de tokens.
+- **Sin cola offline**: las órdenes fallidas no se reintentan. En producción se encolarían y sincronizarían.
+- **Animaciones mínimas**: el modal desliza, los skeletons pulsan. Las apps financieras se benefician de estabilidad sobre movimiento.
+- **Sin tests de componentes/E2E**: los tests de lógica de negocio dan mayor ROI para este scope.
 
-- **No WebSocket/real-time prices**: The API is REST-only. Polling with `refetchInterval` would be trivial to add.
-- **No chart library**: Sparklines via SVG paths. A real trading app would use a proper charting library for candlestick/OHLCV charts.
-- **No authentication**: The API is public. Auth would add a login flow + token management.
-- **No offline queue**: Orders submitted offline would fail. A production app would queue and retry.
-- **No animations beyond transitions**: The modal slides up, skeletons pulse. No spring physics or gesture-driven animations. Financial products benefit from stability, not motion.
+## Accesibilidad
 
-### What was intentionally not implemented
-
-- **Component rendering tests**: Setup cost (mock providers, query client, theme context) is disproportionate for a take-home. Business logic tests provide higher ROI.
-- **E2E tests**: Would require Detox/Maestro setup. Valuable in production, not for demonstrating engineering judgment.
-- **Storybook**: Useful for design systems with multiple consumers. Overhead for a single-app challenge.
-
-## Accessibility
-
-- **Touch targets**: Minimum 44pt for all interactive elements
-- **Contrast**: Semantic colors meet WCAG AA in both light/dark modes
-- **Labels**: `accessibilityRole` and `accessibilityLabel` on interactive elements
-- **Screen readers**: Order modal inputs labeled, status announced
-- **Dynamic type**: `fontSize` in tokens supports system scaling
+- **Touch targets**: mínimo 44pt para todos los elementos interactivos
+- **Contraste**: colores semánticos cumplen WCAG AA en ambos modos light/dark
+- **Labels**: `accessibilityRole` y `accessibilityLabel` en elementos interactivos
+- **Screen readers**: inputs del modal de órdenes etiquetados, estado anunciado
+- **Tipo dinámico**: `fontSize` en tokens soporta escalado del sistema
 
 ## Performance
 
-- **`React.memo`** on `InstrumentCard` and `PortfolioPositionCard` — these receive stable props from `useCallback`-wrapped handlers
-- **`keyExtractor`** on all FlatLists — stable keys prevent unnecessary remounts
-- **Debounced search** (300ms) — avoids hammering the API on every keystroke
-- **Memoized sparkline data** — SVG points computed once per data change
-- **No inline arrow functions in renderItem** — prevents re-renders from new function references
-- **Stable context values** — theme and i18n contexts use `useMemo` to avoid cascading re-renders
+- **`React.memo`** en `InstrumentCard` y `PortfolioPositionCard` — reciben props estables desde handlers wrapeados con `useCallback`
+- **`keyExtractor`** en todos los FlatLists — keys estables previenen remounts innecesarios
+- **Búsqueda con debounce** (300ms) — evita bombardear la API en cada keystroke
+- **Datos de sparkline memorizados** — puntos SVG calculados una sola vez por cambio de datos
+- **Sin arrow functions inline en renderItem** — previene re-renders por nuevas referencias de función
+- **Valores de context estables** — theme e i18n usan `useMemo` para evitar re-renders en cascada
 
-### What was NOT optimized
+## Escalabilidad
 
-- **Bundle splitting**: Single route app, no benefit
-- **Image optimization**: No images beyond assets
-- **Virtualization tuning**: Default FlatList settings are adequate for ~25 items
+**Se mantiene**: arquitectura feature-based, TanStack Query, design tokens, estructura de i18n.
 
-## Testing Philosophy
+**Cambia a escala**: adoptar `react-i18next` para pluralización, agregar interceptors de auth, tests de componentes (RNTL), E2E (Detox), librería de charts real, sync offline con resolución de conflictos, monitoreo con Sentry.
 
-Tests focus exclusively on **business-critical financial logic**:
+## Mejoras Futuras
 
-| Module | Why tested |
-|---|---|
-| `aggregation.ts` | Position merging with weighted averages — wrong math = wrong money display |
-| `validation.ts` | Order form rules — invalid orders waste API calls and confuse users |
-| `payloads.ts` | Payload construction — wrong shape = API rejection |
-| `format.ts` | Currency/percentage formatting — subtle edge cases (0, negative, locale) |
-| `sparkline.ts` | Determinism guarantee — non-deterministic charts create visual chaos |
-
-**42 tests total.** Each test exists because a bug there would directly harm the user.
-
-### Intentionally not tested
-
-- **Component rendering**: Mock setup cost > value for a take-home
-- **API calls**: Mocking Axios doesn't test real network behavior
-- **Navigation**: Single screen, trivial flow
-
-## Scalability
-
-### What stays the same at scale
-- Feature-based architecture
-- TanStack Query for server state
-- Design token system
-- i18n structure (add locales as JSON files)
-
-### What changes at scale
-- **i18n**: Adopt `react-i18next` when pluralization/interpolation is needed
-- **State management**: Zustand stays but may get more stores (user session, feature flags)
-- **Testing**: Add component tests (React Native Testing Library), E2E (Detox/Maestro)
-- **API layer**: Add interceptors for auth tokens, refresh flows, error reporting
-- **Navigation**: Multiple screens with deep linking
-- **Charts**: Replace sparklines with a proper charting library (Victory, react-native-charts-wrapper)
-- **Offline**: Add persistence layer with conflict resolution
-- **Monitoring**: Sentry for errors, analytics for UX metrics
-
-## Future Improvements
-
-- Real-time price updates via WebSocket
-- Watchlist / favorites functionality
-- ~~Order history screen~~ ✓ (local)
-- Candlestick charts with historical data
-- Biometric authentication
-- Push notifications for order fills
-- ~~Portfolio performance over time chart~~ ✓ (derived from P&L)
-- Haptic feedback on order submission
-- Cloud sync for order history across devices
-
-## License
-
-MIT
+- Precios en tiempo real via WebSocket
+- Charts de velas con datos históricos
+- Autenticación biométrica
+- Notificaciones push para ejecución de órdenes
+- Sync en la nube para historial de órdenes
+- Feedback háptico en acciones de órdenes
