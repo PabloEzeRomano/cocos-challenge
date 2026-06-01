@@ -1,6 +1,8 @@
-# Cocos Trading App
+# Austral Trading App
 
 A React Native fintech/trading app for the Argentine stock market. Consumes real-time instrument data, portfolio positions, and supports order placement (BUY/SELL, MARKET/LIMIT). Inspired by the simplicity of Coinbase and Robinhood, with a focus on financial clarity over visual noise.
+
+> **Branding**: App is branded "Austral" with a star icon. Header uses icon-only buttons for theme toggle (sun/moon) and locale switch (globe + code).
 
 ## Screenshots
 
@@ -51,10 +53,11 @@ src/
     portfolio/                # Position aggregation, P&L calculations
     orders/                   # Order modal, form, validation, result
     search/                   # Debounced search bar + results
-  components/                 # Shared: Skeleton, ErrorState, EmptyState, TabBar, Sparkline
+  components/                 # Shared: Skeleton, ErrorState, EmptyState, TabBar, Avatar, BalanceChart, Sparkline
   services/api.ts             # Axios client + typed endpoint functions
   hooks/useDebounce.ts        # Generic debounce hook
   store/preferences.ts        # Zustand: theme + locale (persisted)
+  store/orderHistory.ts       # Zustand: local order history (persisted)
   theme/                      # Design tokens, ThemeProvider, useTheme
   i18n/                       # Translation provider, dictionaries (es/en)
   utils/format.ts             # Currency, percentage, quantity formatters
@@ -74,7 +77,9 @@ Each feature owns its components, hooks, utils, and types. This means:
 
 ### Single-Screen Architecture
 
-The app uses one screen with tabs (Instruments/Portfolio) and a search overlay. This mirrors how Robinhood and Coinbase handle their core trading views — the user's mental model is "I'm looking at the market" with different lenses.
+The app uses one screen with three tabs (Market/Portfolio/Orders) and a search overlay. This mirrors how Robinhood and Coinbase handle their core trading views — the user's mental model is "I'm looking at the market" with different lenses.
+
+**Tab bar**: Fixed at bottom (global), always visible. Only the Market tab shows the search bar and header. The Orders tab provides local history. This is a standard mobile fintech pattern.
 
 **Alternative**: Multi-screen navigation with stack. Rejected because separate screens add navigation complexity without UX benefit. The user never needs a "back" button in this flow.
 
@@ -112,13 +117,33 @@ The modal supports two input modes:
 
 Fractional shares are explicitly disallowed. The estimated total updates live as the user types.
 
-### Theme System
+**Native keyboard over custom keypad**: The original implementation used a custom in-app numpad. Replaced with native `TextInput` + `keyboardType="number-pad"` for better accessibility, OS-level input handling (autocomplete, clipboard), and less code to maintain.
 
-~12 semantic color tokens per mode (light/dark). No hundreds of color variations. The token structure:
-- **Background hierarchy**: background → surface → surfaceSecondary
-- **Text hierarchy**: text → textSecondary
-- **Semantic**: positive (green), negative (red), accent (blue)
-- **Utility**: border, skeleton, overlay
+### Order History (Local)
+
+Completed orders are persisted locally via Zustand + AsyncStorage. Stored as a separate `cocos-order-history` key. Each entry captures: ticker, side, type, quantity, price, total, status, and timestamp.
+
+**Why local-only**: The API has no order history endpoint. Local storage provides immediate UX feedback ("my orders") without a backend dependency. Orders survive app restart but not reinstall. No sync between devices — acceptable trade-off for a challenge scope.
+
+### Portfolio Chart (Derived Data)
+
+The `BalanceChart` generates a deterministic value curve from `totalCost → totalValue` using a seeded PRNG with realistic volatility scaling. The chart is visually stable across re-renders (same inputs = same curve) but does not represent real historical data.
+
+**Why not a static shape**: The original chart was hardcoded. Deriving from actual portfolio data means the chart direction, amplitude, and shape reflect the user's real P&L ratio — positive portfolios trend up, negative trend down, with proportional volatility.
+
+### Theme System (Redesigned)
+
+Complete design system overhaul from generic tokens to semantic, purpose-driven naming:
+
+- **Background hierarchy**: `bg` → `bgElevated` → `surface` → `surface2` → `surfaceModal`
+- **Text hierarchy**: `text` → `textSecondary` → `textMuted` → `textInverse`
+- **Semantic colors**: `positive`/`positiveBg`, `negative`/`negativeBg`, `warn`/`warnBg`
+- **Interactive**: `accent` → `accentText` → `accentSoft`
+- **Utility**: `border`, `borderStrong`, `field`, `overlay`
+- **Numeric typography**: Added `numLg` (46px) and `numMd` (22px) variants for price/amount displays
+- **Radius tokens**: Semantic naming (`badge`, `input`, `button`, `card`, `sheet`, `chip`) instead of size-based (`sm`, `md`, `lg`)
+
+Dropped the `shadows` object entirely — React Native shadow behavior is inconsistent cross-platform and adds visual noise to a financial app that benefits from flat, high-contrast surfaces.
 
 **Why not more tokens**: Financial data readability depends on contrast, not color variety. More tokens = more maintenance with no UX benefit.
 
@@ -142,8 +167,9 @@ The entire implementation is ~40 lines. It supports:
 | Form inputs | `useState` | Ephemeral, component-scoped, no sharing needed |
 | Modal visibility | `useState` | Same |
 | Theme + locale | Zustand + AsyncStorage | Persisted across sessions, accessed from multiple components |
+| Order history | Zustand + AsyncStorage | Local persistence, no backend dependency |
 
-**Zero unnecessary global state.** The only Zustand store has two fields.
+Both Zustand stores use a resilient `safeStorage` wrapper that silently falls back to no-op if the AsyncStorage native module is missing (web compatibility).
 
 ## Trade-offs
 
@@ -226,12 +252,13 @@ Tests focus exclusively on **business-critical financial logic**:
 
 - Real-time price updates via WebSocket
 - Watchlist / favorites functionality
-- Order history screen
+- ~~Order history screen~~ ✓ (local)
 - Candlestick charts with historical data
 - Biometric authentication
 - Push notifications for order fills
-- Portfolio performance over time chart
+- ~~Portfolio performance over time chart~~ ✓ (derived from P&L)
 - Haptic feedback on order submission
+- Cloud sync for order history across devices
 
 ## License
 
