@@ -1,68 +1,76 @@
 {
   "tabs": {
-    "instruments": "Instrumentos",
-    "portfolio": "Portafolio"
+    "instruments": "Mercado",
+    "portfolio": "Portafolio",
+    "orders": "Órdenes"
   },
   "search": {
-    "placeholder": "Buscar por ticker...",
-    "empty": "No se encontraron resultados",
+    "placeholder": "Buscar por ticker o empresa",
+    "empty": "Sin resultados",
+    "emptyHint": "Probá con otro ticker o nombre.",
     "searching": "Buscando..."
   },
   "instruments": {
-    "title": "Instrumentos",
-    "return": "Retorno"
+    "title": "Mercado"
   },
   "portfolio": {
     "title": "Portafolio",
     "totalValue": "Valor total",
-    "totalPnL": "Ganancia/Pérdida",
-    "totalReturn": "Retorno total",
-    "quantity": "Cantidad",
-    "marketValue": "Valor de mercado",
-    "avgCost": "Costo promedio",
+    "alltime": "histórico",
+    "availableTrade": "Disponible para operar",
+    "positions": "Posiciones",
     "cash": "Efectivo"
   },
   "order": {
-    "title": "Nueva orden",
     "buy": "Comprar",
     "sell": "Vender",
     "market": "Mercado",
     "limit": "Límite",
     "quantity": "Cantidad",
-    "amount": "Monto (ARS)",
-    "price": "Precio límite",
+    "amountArs": "Monto ARS",
+    "limitPrice": "Precio límite",
+    "marketPrice": "Precio de mercado",
     "shares": "acciones",
+    "share": "acción",
     "submit": "Enviar orden",
-    "success": "Orden enviada",
-    "orderId": "ID de orden",
+    "totalCost": "Costo total",
+    "youReceive": "Recibís",
+    "estCommission": "Comisión estimada (0,5%)",
+    "orderSent": "Orden enviada",
+    "buyNoun": "Compra",
+    "sellNoun": "Venta",
+    "ofShares": "de",
+    "orderId": "N° de orden",
     "status": "Estado",
+    "typeLabel": "Tipo",
+    "totalDebited": "Total debitado",
+    "totalCredited": "Total acreditado",
+    "done": "Listo",
     "filled": "Ejecutada",
     "pending": "Pendiente",
     "rejected": "Rechazada",
-    "tryAgain": "Intentar de nuevo",
-    "close": "Cerrar",
-    "inputMode": {
-      "quantity": "Cantidad",
-      "amount": "Monto"
-    },
+    "sending": "Enviando…",
+    "max": "Máx",
+    "enterAmount": "Ingresá una cantidad para continuar",
+    "insufficient": "Saldo insuficiente",
+    "available": "Disponible",
     "validation": {
-      "quantityRequired": "Ingrese una cantidad válida",
+      "quantityRequired": "Ingresá una cantidad válida",
       "quantityInteger": "Solo se permiten acciones enteras",
-      "priceRequired": "Ingrese un precio válido",
+      "priceRequired": "Ingresá un precio válido",
       "amountMinimum": "El monto mínimo es el precio de una acción"
-    },
-    "summary": {
-      "side": "Operación",
-      "type": "Tipo",
-      "quantity": "Cantidad",
-      "estimatedTotal": "Total estimado",
-      "limitPrice": "Precio límite"
     }
+  },
+  "orders": {
+    "title": "Órdenes",
+    "order": "orden",
+    "orderPlural": "órdenes",
+    "emptyTitle": "Sin órdenes aún",
+    "emptySubtitle": "Tu historial de órdenes aparecerá aquí"
   },
   "common": {
     "loading": "Cargando...",
     "error": "Ocurrió un error",
-    "retry": "Reintentar",
-    "pullToRefresh": "Desliza para actualizar"
+    "retry": "Reintentar"
   }
 }

@@ -8,11 +8,12 @@ import { SearchBar } from '../src/features/search/components/SearchBar';
 import { SearchResults } from '../src/features/search/components/SearchResults';
 import { InstrumentList } from '../src/features/instruments/components/InstrumentList';
 import { PortfolioList } from '../src/features/portfolio/components/PortfolioList';
+import { OrderHistoryList } from '../src/features/orders/components/OrderHistoryList';
 import { OrderModal } from '../src/features/orders/components/OrderModal';
 import { TabBar } from '../src/components/TabBar';
 import { SettingsHeader } from '../src/components/SettingsHeader';
 
-type TabKey = 'instruments' | 'portfolio';
+type TabKey = 'instruments' | 'portfolio' | 'orders';
 
 export default function HomeScreen() {
   const { colors, spacing } = useTheme();
@@ -40,38 +41,41 @@ export default function HomeScreen() {
   const tabs = [
     { key: 'instruments', label: t('tabs.instruments') },
     { key: 'portfolio', label: t('tabs.portfolio') },
+    { key: 'orders', label: t('tabs.orders') },
   ];
 
   const isSearching = searchQuery.trim().length > 0;
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
-      <SettingsHeader />
-      <SearchBar
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        onClear={handleClearSearch}
-      />
-
-      {!isSearching && (
-        <View style={{ paddingHorizontal: spacing.md, marginBottom: spacing.sm }}>
-          <TabBar
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabChange={(key) => setActiveTab(key as TabKey)}
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.bg }]} edges={['top']}>
+      {activeTab === 'instruments' && (
+        <>
+          <SettingsHeader />
+          <SearchBar
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            onClear={handleClearSearch}
           />
-        </View>
+        </>
       )}
 
       <View style={styles.content}>
-        {isSearching ? (
+        {isSearching && activeTab === 'instruments' ? (
           <SearchResults query={searchQuery} onInstrumentPress={handleInstrumentPress} />
         ) : activeTab === 'instruments' ? (
           <InstrumentList onInstrumentPress={handleInstrumentPress} />
-        ) : (
+        ) : activeTab === 'portfolio' ? (
           <PortfolioList onPositionPress={handleInstrumentPress} />
+        ) : (
+          <OrderHistoryList />
         )}
       </View>
+
+      <TabBar
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={(key) => setActiveTab(key as TabKey)}
+      />
 
       <OrderModal
         visible={orderModalVisible}

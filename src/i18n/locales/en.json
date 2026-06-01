@@ -1,68 +1,76 @@
 {
   "tabs": {
-    "instruments": "Instruments",
-    "portfolio": "Portfolio"
+    "instruments": "Market",
+    "portfolio": "Portfolio",
+    "orders": "Orders"
   },
   "search": {
-    "placeholder": "Search by ticker...",
-    "empty": "No results found",
+    "placeholder": "Search by ticker or company",
+    "empty": "No results",
+    "emptyHint": "Try another ticker or name.",
     "searching": "Searching..."
   },
   "instruments": {
-    "title": "Instruments",
-    "return": "Return"
+    "title": "Market"
   },
   "portfolio": {
     "title": "Portfolio",
     "totalValue": "Total value",
-    "totalPnL": "Profit/Loss",
-    "totalReturn": "Total return",
-    "quantity": "Quantity",
-    "marketValue": "Market value",
-    "avgCost": "Avg cost",
+    "alltime": "all-time",
+    "availableTrade": "Available to trade",
+    "positions": "Positions",
     "cash": "Cash"
   },
   "order": {
-    "title": "New order",
     "buy": "Buy",
     "sell": "Sell",
     "market": "Market",
     "limit": "Limit",
     "quantity": "Quantity",
-    "amount": "Amount (ARS)",
-    "price": "Limit price",
+    "amountArs": "ARS amount",
+    "limitPrice": "Limit price",
+    "marketPrice": "Market price",
     "shares": "shares",
+    "share": "share",
     "submit": "Submit order",
-    "success": "Order submitted",
-    "orderId": "Order ID",
+    "totalCost": "Total cost",
+    "youReceive": "You receive",
+    "estCommission": "Est. commission (0.5%)",
+    "orderSent": "Order sent",
+    "buyNoun": "Buy",
+    "sellNoun": "Sell",
+    "ofShares": "of",
+    "orderId": "Order no.",
     "status": "Status",
+    "typeLabel": "Type",
+    "totalDebited": "Total debited",
+    "totalCredited": "Total credited",
+    "done": "Done",
     "filled": "Filled",
     "pending": "Pending",
     "rejected": "Rejected",
-    "tryAgain": "Try again",
-    "close": "Close",
-    "inputMode": {
-      "quantity": "Quantity",
-      "amount": "Amount"
-    },
+    "sending": "Sending…",
+    "max": "Max",
+    "enterAmount": "Enter an amount to continue",
+    "insufficient": "Insufficient balance",
+    "available": "Available",
     "validation": {
       "quantityRequired": "Enter a valid quantity",
       "quantityInteger": "Only whole shares allowed",
       "priceRequired": "Enter a valid price",
       "amountMinimum": "Minimum amount is one share price"
-    },
-    "summary": {
-      "side": "Side",
-      "type": "Type",
-      "quantity": "Quantity",
-      "estimatedTotal": "Estimated total",
-      "limitPrice": "Limit price"
     }
+  },
+  "orders": {
+    "title": "Orders",
+    "order": "order",
+    "orderPlural": "orders",
+    "emptyTitle": "No orders yet",
+    "emptySubtitle": "Your order history will appear here"
   },
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",
-    "retry": "Retry",
-    "pullToRefresh": "Pull to refresh"
+    "retry": "Retry"
   }
 }
