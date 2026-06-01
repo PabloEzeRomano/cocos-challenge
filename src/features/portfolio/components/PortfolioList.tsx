@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { FlatList, RefreshControl, View } from 'react-native';
+import { FlatList, RefreshControl, View, Text, StyleSheet } from 'react-native';
 import { usePortfolio } from '../hooks/usePortfolio';
 import { aggregatePositions, calculatePortfolioSummary, AggregatedPosition } from '../utils/aggregation';
 import { PortfolioPositionCard } from './PortfolioPositionCard';
@@ -7,6 +7,7 @@ import { PortfolioSummaryHeader } from './PortfolioSummary';
 import { PortfolioSkeleton } from './PortfolioSkeleton';
 import { ErrorState } from '../../../components/ErrorState';
 import { useTheme } from '../../../theme/useTheme';
+import { useTranslation } from '../../../i18n/useTranslation';
 import { Instrument } from '../../../types/api';
 
 interface PortfolioListProps {
@@ -15,14 +16,21 @@ interface PortfolioListProps {
 
 export function PortfolioList({ onPositionPress }: PortfolioListProps) {
   const { data, isLoading, isError, refetch, isRefetching } = usePortfolio();
-  const { colors, spacing } = useTheme();
+  const { colors } = useTheme();
+  const { t } = useTranslation();
 
   const aggregated = useMemo(() => {
     if (!data) return [];
     return aggregatePositions(data);
   }, [data]);
 
+  const cashPosition = aggregated.find((p) => p.isCash);
+  const positions = aggregated.filter((p) => !p.isCash);
   const summary = useMemo(() => calculatePortfolioSummary(aggregated), [aggregated]);
+  const totalCost = useMemo(() =>
+    positions.reduce((sum, p) => sum + p.totalQuantity * p.weightedAvgCost, 0),
+    [positions]
+  );
 
   const handlePress = useCallback(
     (position: AggregatedPosition) => {
@@ -41,8 +49,8 @@ export function PortfolioList({ onPositionPress }: PortfolioListProps) {
   );
 
   const renderItem = useCallback(
-    ({ item }: { item: AggregatedPosition }) => (
-      <PortfolioPositionCard position={item} onPress={handlePress} />
+    ({ item, index }: { item: AggregatedPosition; index: number }) => (
+      <PortfolioPositionCard position={item} onPress={handlePress} showBorder={index > 0} />
     ),
     [handlePress]
   );
@@ -54,19 +62,26 @@ export function PortfolioList({ onPositionPress }: PortfolioListProps) {
 
   return (
     <FlatList
-      data={aggregated}
+      data={positions}
       renderItem={renderItem}
       keyExtractor={keyExtractor}
-      ListHeaderComponent={<PortfolioSummaryHeader summary={summary} />}
-      contentContainerStyle={{ padding: spacing.md }}
+      ListHeaderComponent={
+        <View>
+          <PortfolioSummaryHeader summary={summary} cashBalance={cashPosition?.marketValue ?? 0} totalCost={totalCost} />
+          <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>
+            {t('portfolio.positions').toUpperCase()} · {positions.length}
+          </Text>
+        </View>
+      }
+      contentContainerStyle={{ paddingHorizontal: 22, paddingBottom: 24 }}
       refreshControl={
-        <RefreshControl
-          refreshing={isRefetching}
-          onRefresh={refetch}
-          tintColor={colors.accent}
-        />
+        <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={colors.accent} />
       }
       showsVerticalScrollIndicator={false}
     />
   );
 }
+
+const styles = StyleSheet.create({
+  sectionTitle: { fontSize: 13, fontWeight: '700', letterSpacing: 0.78, marginTop: 22, marginBottom: 6 },
+});
