@@ -57,7 +57,7 @@ export function OrderForm({
   return (
     <View>
       {/* Side toggle */}
-      <View style={[styles.toggleRow, { backgroundColor: colors.surfaceSecondary, borderRadius: radius.md, padding: spacing.xs, marginBottom: spacing.md }]}>
+      <View style={[styles.toggleRow, { backgroundColor: colors.surface2, borderRadius: radius.input, padding: spacing.xs, marginBottom: spacing.md }]}>
         <ToggleButton
           label={t('order.buy')}
           active={side === 'BUY'}
@@ -73,7 +73,7 @@ export function OrderForm({
       </View>
 
       {/* Type toggle */}
-      <View style={[styles.toggleRow, { backgroundColor: colors.surfaceSecondary, borderRadius: radius.md, padding: spacing.xs, marginBottom: spacing.md }]}>
+      <View style={[styles.toggleRow, { backgroundColor: colors.surface2, borderRadius: radius.input, padding: spacing.xs, marginBottom: spacing.md }]}>
         <ToggleButton
           label={t('order.market')}
           active={orderType === 'MARKET'}
@@ -89,15 +89,15 @@ export function OrderForm({
       </View>
 
       {/* Input mode toggle */}
-      <View style={[styles.toggleRow, { backgroundColor: colors.surfaceSecondary, borderRadius: radius.md, padding: spacing.xs, marginBottom: spacing.md }]}>
+      <View style={[styles.toggleRow, { backgroundColor: colors.surface2, borderRadius: radius.input, padding: spacing.xs, marginBottom: spacing.md }]}>
         <ToggleButton
-          label={t('order.inputMode.quantity')}
+          label={t('order.quantity')}
           active={inputMode === 'quantity'}
           onPress={() => onInputModeChange('quantity')}
           activeColor={colors.accent}
         />
         <ToggleButton
-          label={t('order.inputMode.amount')}
+          label={t('order.amountArs')}
           active={inputMode === 'amount'}
           onPress={() => onInputModeChange('amount')}
           activeColor={colors.accent}
@@ -114,7 +114,7 @@ export function OrderForm({
             value={quantity}
             onChangeText={onQuantityChange}
             keyboardType="number-pad"
-            style={[styles.input, { backgroundColor: colors.inputBackground, borderColor: colors.border, borderRadius: radius.md, color: colors.text, ...typography.body, padding: spacing.md }]}
+            style={[styles.input, { backgroundColor: colors.field, borderColor: colors.border, borderRadius: radius.input, color: colors.text, ...typography.body, padding: spacing.lg }]}
             placeholder="0"
             placeholderTextColor={colors.textSecondary}
             accessibilityLabel={t('order.quantity')}
@@ -129,7 +129,7 @@ export function OrderForm({
             value={amount}
             onChangeText={onAmountChange}
             keyboardType="decimal-pad"
-            style={[styles.input, { backgroundColor: colors.inputBackground, borderColor: colors.border, borderRadius: radius.md, color: colors.text, ...typography.body, padding: spacing.md }]}
+            style={[styles.input, { backgroundColor: colors.field, borderColor: colors.border, borderRadius: radius.input, color: colors.text, ...typography.body, padding: spacing.lg }]}
             placeholder="0.00"
             placeholderTextColor={colors.textSecondary}
             accessibilityLabel={t('order.amount')}
@@ -152,7 +152,7 @@ export function OrderForm({
             value={price}
             onChangeText={onPriceChange}
             keyboardType="decimal-pad"
-            style={[styles.input, { backgroundColor: colors.inputBackground, borderColor: colors.border, borderRadius: radius.md, color: colors.text, ...typography.body, padding: spacing.md }]}
+            style={[styles.input, { backgroundColor: colors.field, borderColor: colors.border, borderRadius: radius.input, color: colors.text, ...typography.body, padding: spacing.lg }]}
             placeholder={lastPrice.toString()}
             placeholderTextColor={colors.textSecondary}
             accessibilityLabel={t('order.price')}
@@ -162,14 +162,14 @@ export function OrderForm({
 
       {/* Order summary */}
       {computedQuantity > 0 && (
-        <View style={[styles.summary, { backgroundColor: colors.surfaceSecondary, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.md }]}>
-          <SummaryRow label={t('order.summary.side')} value={side === 'BUY' ? t('order.buy') : t('order.sell')} />
-          <SummaryRow label={t('order.summary.type')} value={orderType === 'MARKET' ? t('order.market') : t('order.limit')} />
-          <SummaryRow label={t('order.summary.quantity')} value={`${computedQuantity} ${t('order.shares')}`} />
+        <View style={[styles.summary, { backgroundColor: colors.surface2, borderRadius: radius.input, padding: spacing.md, marginBottom: spacing.md }]}>
+          <SummaryRow label={side === 'BUY' ? t('order.buy') : t('order.sell')} value={side === 'BUY' ? t('order.buy') : t('order.sell')} />
+          <SummaryRow label={t('order.market')} value={orderType === 'MARKET' ? t('order.market') : t('order.limit')} />
+          <SummaryRow label={t('order.quantity')} value={`${computedQuantity} ${t('order.shares')}`} />
           {orderType === 'LIMIT' && price && (
-            <SummaryRow label={t('order.summary.limitPrice')} value={formatCurrency(Number(price))} />
+            <SummaryRow label={t('order.limitPrice')} value={formatCurrency(Number(price))} />
           )}
-          <SummaryRow label={t('order.summary.estimatedTotal')} value={formatCurrency(estimatedTotal)} bold />
+          <SummaryRow label={t('order.totalCost')} value={formatCurrency(estimatedTotal)} bold />
         </View>
       )}
 
@@ -188,7 +188,7 @@ export function OrderForm({
           styles.submitButton,
           {
             backgroundColor: side === 'BUY' ? colors.positive : colors.negative,
-            borderRadius: radius.md,
+            borderRadius: radius.button,
             paddingVertical: spacing.md,
             opacity: isSubmitting ? 0.7 : 1,
           },
@@ -218,14 +218,14 @@ function ToggleButton({ label, active, onPress, activeColor }: { label: string; 
         styles.toggleButton,
         {
           backgroundColor: active ? activeColor : 'transparent',
-          borderRadius: radius.sm,
+          borderRadius: radius.badge,
           paddingVertical: spacing.sm,
         },
       ]}
       accessibilityRole="tab"
       accessibilityState={{ selected: active }}
     >
-      <Text style={[typography.bodySmall, { color: active ? '#FFFFFF' : colors.textSecondary, fontWeight: active ? '600' : '400', textAlign: 'center' }]}>
+      <Text style={[typography.sm, { color: active ? '#FFFFFF' : colors.textSecondary, fontWeight: active ? '600' : '400', textAlign: 'center' }]}>
         {label}
       </Text>
     </Pressable>
@@ -238,7 +238,7 @@ function SummaryRow({ label, value, bold }: { label: string; value: string; bold
   return (
     <View style={[styles.summaryRow, { marginBottom: spacing.xs }]}>
       <Text style={[typography.caption, { color: colors.textSecondary }]}>{label}</Text>
-      <Text style={[typography.bodySmall, { color: colors.text, fontWeight: bold ? '600' : '400' }]}>{value}</Text>
+      <Text style={[typography.sm, { color: colors.text, fontWeight: bold ? '600' : '400' }]}>{value}</Text>
     </View>
   );
 }
