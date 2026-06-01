@@ -120,11 +120,6 @@ export function OrderModal({ visible, instrument, onClose }: OrderModalProps) {
     setValue(cleaned.slice(0, max));
   };
 
-  const displayValue = () => {
-    if (!value) return inputMode === 'amount' ? '$ 0' : '0';
-    return inputMode === 'amount' ? `$ ${value}` : value;
-  };
-
   const shares = qty === 1 ? t('order.share') : t('order.shares');
   const subEquiv = inputMode === 'amount'
     ? `≈ ${qty} ${shares}`
@@ -215,7 +210,7 @@ export function OrderModal({ visible, instrument, onClose }: OrderModalProps) {
                   {/* Native TextInput styled as big value */}
                   <Pressable onPress={() => inputRef.current?.focus()} style={styles.inputTouchable}>
                     {inputMode === 'amount' && (
-                      <Text style={[styles.bigPrefix, { color: value ? colors.text : colors.textMuted }]}>$ </Text>
+                      <Text style={[styles.bigPrefix, { color: value ? colors.text : colors.textMuted }]}>$</Text>
                     )}
                     <TextInput
                       ref={inputRef}
@@ -238,10 +233,12 @@ export function OrderModal({ visible, instrument, onClose }: OrderModalProps) {
 
                 {/* Quick chips */}
                 <View style={styles.quickRow}>
-                  {[5, 10, 25].map((n) => (
+                  {(inputMode === 'amount' ? [1000, 5000, 10000] : [5, 10, 25]).map((n) => (
                     <Pressable key={n} onPress={() => handleQuick(n)}
                       style={[styles.quickChip, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-                      <Text style={[styles.quickText, { color: colors.textSecondary }]}>{n}</Text>
+                      <Text style={[styles.quickText, { color: colors.textSecondary }]}>
+                        {inputMode === 'amount' ? `$${(n / 1000)}k` : n}
+                      </Text>
                     </Pressable>
                   ))}
                   <Pressable onPress={() => handleQuick(inputMode === 'quantity' ? 999 : 999999)}
@@ -345,8 +342,8 @@ const styles = StyleSheet.create({
   modePill: { flexDirection: 'row', borderRadius: 999, padding: 3, marginBottom: 16 },
   modeBtn: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 999 },
   modeBtnText: { fontSize: 12.5, fontWeight: '600' },
-  inputTouchable: { flexDirection: 'row', alignItems: 'center' },
-  bigPrefix: { fontSize: 46, fontWeight: '700', letterSpacing: -1.38 },
+  inputTouchable: { alignItems: 'center', justifyContent: 'center' },
+  bigPrefix: { position: 'absolute', left: -30, fontSize: 46, fontWeight: '700', letterSpacing: -1.38 },
   bigInput: { fontSize: 46, fontWeight: '700', letterSpacing: -1.38, minWidth: 40, textAlign: 'center', padding: 0 },
   subEquiv: { fontSize: 13.5, marginTop: 8 },
   quickRow: { flexDirection: 'row', gap: 8 },
