@@ -4,7 +4,7 @@ import { useDebounce } from '../../../hooks/useDebounce';
 import { Instrument } from '../../../types/api';
 
 export function useSearch(query: string) {
-  const debouncedQuery = useDebounce(query.trim(), 300);
+  const debouncedQuery = useDebounce(query.trim().toUpperCase(), 300);
 
   return useQuery<Instrument[]>({
     queryKey: ['search', debouncedQuery],
