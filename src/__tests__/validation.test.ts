@@ -1,4 +1,7 @@
-import { validateOrderForm, calculateQuantityFromAmount } from '../features/orders/utils/validation';
+import {
+  calculateQuantityFromAmount,
+  validateOrderForm,
+} from '../features/orders/utils/validation';
 
 describe('validateOrderForm', () => {
   const baseValues = {
@@ -41,41 +44,69 @@ describe('validateOrderForm', () => {
 
   describe('amount mode', () => {
     it('valid amount covering at least one share', () => {
-      const result = validateOrderForm({ ...baseValues, inputMode: 'amount', amount: '500' });
+      const result = validateOrderForm({
+        ...baseValues,
+        inputMode: 'amount',
+        amount: '500',
+      });
       expect(result.isValid).toBe(true);
     });
 
     it('rejects amount less than one share', () => {
-      const result = validateOrderForm({ ...baseValues, inputMode: 'amount', amount: '50' });
+      const result = validateOrderForm({
+        ...baseValues,
+        inputMode: 'amount',
+        amount: '50',
+      });
       expect(result.isValid).toBe(false);
       expect(result.error).toBe('order.validation.amountMinimum');
     });
 
     it('rejects empty amount', () => {
-      const result = validateOrderForm({ ...baseValues, inputMode: 'amount', amount: '' });
+      const result = validateOrderForm({
+        ...baseValues,
+        inputMode: 'amount',
+        amount: '',
+      });
       expect(result.isValid).toBe(false);
     });
   });
 
   describe('LIMIT order price', () => {
     it('valid price for LIMIT order', () => {
-      const result = validateOrderForm({ ...baseValues, orderType: 'LIMIT', price: '50' });
+      const result = validateOrderForm({
+        ...baseValues,
+        orderType: 'LIMIT',
+        price: '50',
+      });
       expect(result.isValid).toBe(true);
     });
 
     it('rejects empty price for LIMIT order', () => {
-      const result = validateOrderForm({ ...baseValues, orderType: 'LIMIT', price: '' });
+      const result = validateOrderForm({
+        ...baseValues,
+        orderType: 'LIMIT',
+        price: '',
+      });
       expect(result.isValid).toBe(false);
       expect(result.error).toBe('order.validation.priceRequired');
     });
 
     it('rejects zero price for LIMIT order', () => {
-      const result = validateOrderForm({ ...baseValues, orderType: 'LIMIT', price: '0' });
+      const result = validateOrderForm({
+        ...baseValues,
+        orderType: 'LIMIT',
+        price: '0',
+      });
       expect(result.isValid).toBe(false);
     });
 
     it('ignores price for MARKET order', () => {
-      const result = validateOrderForm({ ...baseValues, orderType: 'MARKET', price: '' });
+      const result = validateOrderForm({
+        ...baseValues,
+        orderType: 'MARKET',
+        price: '',
+      });
       expect(result.isValid).toBe(true);
     });
   });

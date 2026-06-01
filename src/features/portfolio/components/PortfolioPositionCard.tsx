@@ -1,10 +1,10 @@
-import React, { memo } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { AggregatedPosition } from '../utils/aggregation';
-import { useTheme } from '../../../theme/useTheme';
-import { useTranslation } from '../../../i18n/useTranslation';
+import { memo } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Avatar } from '../../../components/Avatar';
+import { useTranslation } from '../../../i18n/useTranslation';
+import { useTheme } from '../../../theme/useTheme';
 import { formatCurrency, formatQuantity } from '../../../utils/format';
+import { AggregatedPosition } from '../utils/aggregation';
 
 interface PortfolioPositionCardProps {
   position: AggregatedPosition;
@@ -13,7 +13,9 @@ interface PortfolioPositionCardProps {
 }
 
 export const PortfolioPositionCard = memo(function PortfolioPositionCard({
-  position, onPress, showBorder,
+  position,
+  onPress,
+  showBorder,
 }: PortfolioPositionCardProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -38,9 +40,12 @@ export const PortfolioPositionCard = memo(function PortfolioPositionCard({
       </View>
 
       <View style={styles.valueCol}>
-        <Text style={[styles.marketValue, { color: colors.text }]}>{formatCurrency(position.marketValue)}</Text>
+        <Text style={[styles.marketValue, { color: colors.text }]}>
+          {formatCurrency(position.marketValue)}
+        </Text>
         <Text style={[styles.pnl, { color: isPositive ? colors.positive : colors.negative }]}>
-          {isPositive ? '+' : ''}{formatCurrency(position.pnl)} · {Math.abs(position.returnPct).toFixed(2)}%
+          {isPositive ? '+' : ''}
+          {formatCurrency(position.pnl)} · {Math.abs(position.returnPct).toFixed(2)}%
         </Text>
       </View>
     </Pressable>
@@ -48,7 +53,12 @@ export const PortfolioPositionCard = memo(function PortfolioPositionCard({
 });
 
 const styles = StyleSheet.create({
-  container: { flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 14 },
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 13,
+    paddingVertical: 14,
+  },
   info: { flex: 1, minWidth: 0 },
   ticker: { fontWeight: '600', fontSize: 15 },
   detail: { fontSize: 12.5, marginTop: 1 },

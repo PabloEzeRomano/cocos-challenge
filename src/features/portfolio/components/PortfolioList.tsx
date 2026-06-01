@@ -1,14 +1,18 @@
-import React, { useCallback, useMemo } from 'react';
-import { FlatList, RefreshControl, View, Text, StyleSheet } from 'react-native';
-import { usePortfolio } from '../hooks/usePortfolio';
-import { aggregatePositions, calculatePortfolioSummary, AggregatedPosition } from '../utils/aggregation';
-import { PortfolioPositionCard } from './PortfolioPositionCard';
-import { PortfolioSummaryHeader } from './PortfolioSummary';
-import { PortfolioSkeleton } from './PortfolioSkeleton';
+import { useCallback, useMemo } from 'react';
+import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { ErrorState } from '../../../components/ErrorState';
-import { useTheme } from '../../../theme/useTheme';
 import { useTranslation } from '../../../i18n/useTranslation';
+import { useTheme } from '../../../theme/useTheme';
 import { Instrument } from '../../../types/api';
+import { usePortfolio } from '../hooks/usePortfolio';
+import {
+  AggregatedPosition,
+  aggregatePositions,
+  calculatePortfolioSummary,
+} from '../utils/aggregation';
+import { PortfolioPositionCard } from './PortfolioPositionCard';
+import { PortfolioSkeleton } from './PortfolioSkeleton';
+import { PortfolioSummaryHeader } from './PortfolioSummary';
 
 interface PortfolioListProps {
   onPositionPress: (instrument: Instrument) => void;
@@ -27,9 +31,9 @@ export function PortfolioList({ onPositionPress }: PortfolioListProps) {
   const cashPosition = aggregated.find((p) => p.isCash);
   const positions = aggregated.filter((p) => !p.isCash);
   const summary = useMemo(() => calculatePortfolioSummary(aggregated), [aggregated]);
-  const totalCost = useMemo(() =>
-    positions.reduce((sum, p) => sum + p.totalQuantity * p.weightedAvgCost, 0),
-    [positions]
+  const totalCost = useMemo(
+    () => positions.reduce((sum, p) => sum + p.totalQuantity * p.weightedAvgCost, 0),
+    [positions],
   );
 
   const handlePress = useCallback(
@@ -45,14 +49,14 @@ export function PortfolioList({ onPositionPress }: PortfolioListProps) {
       };
       onPositionPress(instrument);
     },
-    [onPositionPress]
+    [onPositionPress],
   );
 
   const renderItem = useCallback(
     ({ item, index }: { item: AggregatedPosition; index: number }) => (
       <PortfolioPositionCard position={item} onPress={handlePress} showBorder={index > 0} />
     ),
-    [handlePress]
+    [handlePress],
   );
 
   const keyExtractor = useCallback((item: AggregatedPosition) => item.ticker, []);
@@ -67,7 +71,11 @@ export function PortfolioList({ onPositionPress }: PortfolioListProps) {
       keyExtractor={keyExtractor}
       ListHeaderComponent={
         <View>
-          <PortfolioSummaryHeader summary={summary} cashBalance={cashPosition?.marketValue ?? 0} totalCost={totalCost} />
+          <PortfolioSummaryHeader
+            summary={summary}
+            cashBalance={cashPosition?.marketValue ?? 0}
+            totalCost={totalCost}
+          />
 
           <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>
             {t('portfolio.positions').toUpperCase()} · {positions.length}
@@ -84,5 +92,11 @@ export function PortfolioList({ onPositionPress }: PortfolioListProps) {
 }
 
 const styles = StyleSheet.create({
-  sectionTitle: { fontSize: 13, fontWeight: '700', letterSpacing: 0.78, marginTop: 22, marginBottom: 6 },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 0.78,
+    marginTop: 22,
+    marginBottom: 6,
+  },
 });

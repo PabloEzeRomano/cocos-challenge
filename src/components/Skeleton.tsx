@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Animated, Platform, StyleSheet, ViewStyle } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { Animated, Platform, ViewStyle } from 'react-native';
 import { useTheme } from '../theme/useTheme';
 
 interface SkeletonProps {
@@ -18,9 +18,17 @@ export function Skeleton({ width, height, borderRadius = 5, style }: SkeletonPro
   useEffect(() => {
     const animation = Animated.loop(
       Animated.sequence([
-        Animated.timing(opacity, { toValue: 0.7, duration: 800, useNativeDriver: canUseNativeDriver }),
-        Animated.timing(opacity, { toValue: 0.3, duration: 800, useNativeDriver: canUseNativeDriver }),
-      ])
+        Animated.timing(opacity, {
+          toValue: 0.7,
+          duration: 800,
+          useNativeDriver: canUseNativeDriver,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0.3,
+          duration: 800,
+          useNativeDriver: canUseNativeDriver,
+        }),
+      ]),
     );
     animation.start();
     return () => animation.stop();
@@ -29,7 +37,13 @@ export function Skeleton({ width, height, borderRadius = 5, style }: SkeletonPro
   return (
     <Animated.View
       style={[
-        { width: width as number, height, backgroundColor: colors.surface2, borderRadius, opacity },
+        {
+          width: width as number,
+          height,
+          backgroundColor: colors.surface2,
+          borderRadius,
+          opacity,
+        },
         style,
       ]}
     />

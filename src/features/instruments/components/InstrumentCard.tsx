@@ -29,11 +29,16 @@ function StarIcon({ filled, color }: { filled: boolean; color: string }) {
   );
 }
 
-export const InstrumentCard = memo(function InstrumentCard({ instrument, onPress, showBorder }: InstrumentCardProps) {
+export const InstrumentCard = memo(function InstrumentCard({
+  instrument,
+  onPress,
+  showBorder,
+}: InstrumentCardProps) {
   const { colors } = useTheme();
   const toggle = useWatchlistStore((s) => s.toggle);
   const isWatched = useWatchlistStore((s) => s.tickers.includes(instrument.ticker));
-  const returnPct = ((instrument.last_price - instrument.close_price) / instrument.close_price) * 100;
+  const returnPct =
+    ((instrument.last_price - instrument.close_price) / instrument.close_price) * 100;
   const isPositive = returnPct >= 0;
 
   const handleStar = () => {
@@ -42,7 +47,13 @@ export const InstrumentCard = memo(function InstrumentCard({ instrument, onPress
 
   return (
     <View style={[styles.row, showBorder && { borderTopWidth: 1, borderTopColor: colors.border }]}>
-      <Pressable onPress={handleStar} hitSlop={8} style={styles.starBtn} accessibilityRole="button" accessibilityLabel={isWatched ? 'Remove from watchlist' : 'Add to watchlist'}>
+      <Pressable
+        onPress={handleStar}
+        hitSlop={8}
+        style={styles.starBtn}
+        accessibilityRole="button"
+        accessibilityLabel={isWatched ? 'Remove from watchlist' : 'Add to watchlist'}
+      >
         <StarIcon filled={isWatched} color={isWatched ? colors.warn : colors.textMuted} />
       </Pressable>
 
@@ -71,7 +82,9 @@ export const InstrumentCard = memo(function InstrumentCard({ instrument, onPress
         />
 
         <View style={styles.priceCol}>
-          <Text style={[styles.price, { color: colors.text }]}>{formatCurrency(instrument.last_price)}</Text>
+          <Text style={[styles.price, { color: colors.text }]}>
+            {formatCurrency(instrument.last_price)}
+          </Text>
           <ChangeTag pct={returnPct} size={12.5} />
         </View>
       </Pressable>
@@ -80,7 +93,12 @@ export const InstrumentCard = memo(function InstrumentCard({ instrument, onPress
 });
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 13 },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 13,
+  },
   starBtn: { justifyContent: 'center' },
   cardContent: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 12 },
   info: { flex: 1, minWidth: 0 },

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Instrument, PortfolioPosition, OrderPayload, OrderResponse } from '../types/api';
+import { Instrument, OrderPayload, OrderResponse, PortfolioPosition } from '../types/api';
 
 const client = axios.create({
   baseURL: 'https://dummy-api-topaz.vercel.app',

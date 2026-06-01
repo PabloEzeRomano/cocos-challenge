@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import Svg, { Polyline } from 'react-native-svg';
 import { generateSparklinePoints } from '../features/instruments/utils/sparkline';
 import { useTheme } from '../theme/useTheme';

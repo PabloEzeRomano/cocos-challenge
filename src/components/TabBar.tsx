@@ -1,6 +1,5 @@
-import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import Svg, { Path, Rect, Circle } from 'react-native-svg';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Svg, { Circle, Path, Rect } from 'react-native-svg';
 import { useTheme } from '../theme/useTheme';
 
 interface TabBarProps {
@@ -12,7 +11,13 @@ interface TabBarProps {
 function MarketIcon({ color, size = 24 }: { color: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Path d="M4 16l4-5 3 3 5-7 4 5" stroke={color} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round" />
+      <Path
+        d="M4 16l4-5 3 3 5-7 4 5"
+        stroke={color}
+        strokeWidth={1.9}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </Svg>
   );
 }
@@ -30,7 +35,12 @@ function WalletIcon({ color, size = 24 }: { color: string; size?: number }) {
 function OrdersIcon({ color, size = 24 }: { color: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
+      <Path
+        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"
+        stroke={color}
+        strokeWidth={1.8}
+        strokeLinecap="round"
+      />
       <Rect x={9} y={3} width={6} height={4} rx={1.5} stroke={color} strokeWidth={1.8} />
       <Path d="M9 12h6M9 16h4" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
     </Svg>
@@ -47,7 +57,18 @@ export function TabBar({ activeTab, onTabChange, tabs }: TabBarProps) {
   const { colors, spacing } = useTheme();
 
   return (
-    <View style={[styles.container, { borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.bg, paddingBottom: spacing['4xl'], paddingTop: spacing.lg }]}>
+    <View
+      style={[
+        styles.container,
+        {
+          borderTopWidth: 1,
+          borderTopColor: colors.border,
+          backgroundColor: colors.bg,
+          paddingBottom: spacing['4xl'],
+          paddingTop: spacing.lg,
+        },
+      ]}
+    >
       {tabs.map((tab) => {
         const isActive = tab.key === activeTab;
         const color = isActive ? colors.text : colors.textMuted;

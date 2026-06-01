@@ -1,5 +1,5 @@
-import React, { memo } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { memo } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../theme/useTheme';
 
 type BadgeStatus = 'filled' | 'pending' | 'rejected';

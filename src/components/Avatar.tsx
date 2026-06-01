@@ -1,5 +1,5 @@
-import React, { memo } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { memo } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../theme/useTheme';
 
 interface AvatarProps {
@@ -11,14 +11,19 @@ export const Avatar = memo(function Avatar({ ticker, size = 40 }: AvatarProps) {
   const { colors, radius } = useTheme();
 
   return (
-    <View style={[styles.container, {
-      width: size,
-      height: size,
-      borderRadius: radius.badge + 4,
-      backgroundColor: colors.surface2,
-      borderWidth: 1,
-      borderColor: colors.border,
-    }]}>
+    <View
+      style={[
+        styles.container,
+        {
+          width: size,
+          height: size,
+          borderRadius: radius.badge + 4,
+          backgroundColor: colors.surface2,
+          borderWidth: 1,
+          borderColor: colors.border,
+        },
+      ]}
+    >
       <Text style={[styles.text, { color: colors.textSecondary, fontSize: size * 0.3 }]}>
         {ticker.slice(0, 4)}
       </Text>

@@ -68,16 +68,41 @@ export const spacing = {
 } as const;
 
 export const typography = {
-  display: { fontSize: 34, fontWeight: '700' as const, lineHeight: 38, letterSpacing: -0.7 },
-  h1: { fontSize: 28, fontWeight: '700' as const, lineHeight: 32, letterSpacing: -0.84 },
-  h2: { fontSize: 22, fontWeight: '700' as const, lineHeight: 28, letterSpacing: -0.44 },
+  display: {
+    fontSize: 34,
+    fontWeight: '700' as const,
+    lineHeight: 38,
+    letterSpacing: -0.7,
+  },
+  h1: {
+    fontSize: 28,
+    fontWeight: '700' as const,
+    lineHeight: 32,
+    letterSpacing: -0.84,
+  },
+  h2: {
+    fontSize: 22,
+    fontWeight: '700' as const,
+    lineHeight: 28,
+    letterSpacing: -0.44,
+  },
   h3: { fontSize: 18, fontWeight: '600' as const, lineHeight: 24 },
   body: { fontSize: 16, fontWeight: '400' as const, lineHeight: 24 },
   sm: { fontSize: 14, fontWeight: '400' as const, lineHeight: 20 },
   caption: { fontSize: 13, fontWeight: '400' as const, lineHeight: 18 },
   micro: { fontSize: 11, fontWeight: '400' as const, lineHeight: 14 },
-  numLg: { fontSize: 46, fontWeight: '700' as const, lineHeight: 46, letterSpacing: -1.38 },
-  numMd: { fontSize: 22, fontWeight: '700' as const, lineHeight: 26, letterSpacing: -0.44 },
+  numLg: {
+    fontSize: 46,
+    fontWeight: '700' as const,
+    lineHeight: 46,
+    letterSpacing: -1.38,
+  },
+  numMd: {
+    fontSize: 22,
+    fontWeight: '700' as const,
+    lineHeight: 26,
+    letterSpacing: -0.44,
+  },
 } as const;
 
 export const radius = {

@@ -1,10 +1,9 @@
-import React from 'react';
-import { View, Text, TextInput, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
-import { OrderSide, OrderType } from '../../../types/api';
-import { useTheme } from '../../../theme/useTheme';
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useTranslation } from '../../../i18n/useTranslation';
-import { calculateQuantityFromAmount } from '../utils/validation';
+import { useTheme } from '../../../theme/useTheme';
+import { OrderSide, OrderType } from '../../../types/api';
 import { formatCurrency } from '../../../utils/format';
+import { calculateQuantityFromAmount } from '../utils/validation';
 
 interface OrderFormProps {
   side: OrderSide;
@@ -46,18 +45,30 @@ export function OrderForm({
   const { colors, spacing, typography, radius } = useTheme();
   const { t } = useTranslation();
 
-  const computedQuantity = inputMode === 'amount'
-    ? calculateQuantityFromAmount(Number(amount) || 0, lastPrice)
-    : Number(quantity) || 0;
+  const computedQuantity =
+    inputMode === 'amount'
+      ? calculateQuantityFromAmount(Number(amount) || 0, lastPrice)
+      : Number(quantity) || 0;
 
-  const estimatedTotal = inputMode === 'quantity'
-    ? (Number(quantity) || 0) * (orderType === 'LIMIT' ? (Number(price) || lastPrice) : lastPrice)
-    : computedQuantity * (orderType === 'LIMIT' ? (Number(price) || lastPrice) : lastPrice);
+  const estimatedTotal =
+    inputMode === 'quantity'
+      ? (Number(quantity) || 0) * (orderType === 'LIMIT' ? Number(price) || lastPrice : lastPrice)
+      : computedQuantity * (orderType === 'LIMIT' ? Number(price) || lastPrice : lastPrice);
 
   return (
     <View>
       {/* Side toggle */}
-      <View style={[styles.toggleRow, { backgroundColor: colors.surface2, borderRadius: radius.input, padding: spacing.xs, marginBottom: spacing.md }]}>
+      <View
+        style={[
+          styles.toggleRow,
+          {
+            backgroundColor: colors.surface2,
+            borderRadius: radius.input,
+            padding: spacing.xs,
+            marginBottom: spacing.md,
+          },
+        ]}
+      >
         <ToggleButton
           label={t('order.buy')}
           active={side === 'BUY'}
@@ -73,7 +84,17 @@ export function OrderForm({
       </View>
 
       {/* Type toggle */}
-      <View style={[styles.toggleRow, { backgroundColor: colors.surface2, borderRadius: radius.input, padding: spacing.xs, marginBottom: spacing.md }]}>
+      <View
+        style={[
+          styles.toggleRow,
+          {
+            backgroundColor: colors.surface2,
+            borderRadius: radius.input,
+            padding: spacing.xs,
+            marginBottom: spacing.md,
+          },
+        ]}
+      >
         <ToggleButton
           label={t('order.market')}
           active={orderType === 'MARKET'}
@@ -89,7 +110,17 @@ export function OrderForm({
       </View>
 
       {/* Input mode toggle */}
-      <View style={[styles.toggleRow, { backgroundColor: colors.surface2, borderRadius: radius.input, padding: spacing.xs, marginBottom: spacing.md }]}>
+      <View
+        style={[
+          styles.toggleRow,
+          {
+            backgroundColor: colors.surface2,
+            borderRadius: radius.input,
+            padding: spacing.xs,
+            marginBottom: spacing.md,
+          },
+        ]}
+      >
         <ToggleButton
           label={t('order.quantity')}
           active={inputMode === 'quantity'}
@@ -107,14 +138,26 @@ export function OrderForm({
       {/* Quantity or Amount input */}
       {inputMode === 'quantity' ? (
         <View style={{ marginBottom: spacing.md }}>
-          <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>
+          <Text
+            style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}
+          >
             {t('order.quantity')}
           </Text>
           <TextInput
             value={quantity}
             onChangeText={onQuantityChange}
             keyboardType="number-pad"
-            style={[styles.input, { backgroundColor: colors.field, borderColor: colors.border, borderRadius: radius.input, color: colors.text, ...typography.body, padding: spacing.lg }]}
+            style={[
+              styles.input,
+              {
+                backgroundColor: colors.field,
+                borderColor: colors.border,
+                borderRadius: radius.input,
+                color: colors.text,
+                ...typography.body,
+                padding: spacing.lg,
+              },
+            ]}
             placeholder="0"
             placeholderTextColor={colors.textSecondary}
             accessibilityLabel={t('order.quantity')}
@@ -122,20 +165,34 @@ export function OrderForm({
         </View>
       ) : (
         <View style={{ marginBottom: spacing.md }}>
-          <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>
+          <Text
+            style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}
+          >
             {t('order.amount')}
           </Text>
           <TextInput
             value={amount}
             onChangeText={onAmountChange}
             keyboardType="decimal-pad"
-            style={[styles.input, { backgroundColor: colors.field, borderColor: colors.border, borderRadius: radius.input, color: colors.text, ...typography.body, padding: spacing.lg }]}
+            style={[
+              styles.input,
+              {
+                backgroundColor: colors.field,
+                borderColor: colors.border,
+                borderRadius: radius.input,
+                color: colors.text,
+                ...typography.body,
+                padding: spacing.lg,
+              },
+            ]}
             placeholder="0.00"
             placeholderTextColor={colors.textSecondary}
             accessibilityLabel={t('order.amount')}
           />
           {computedQuantity > 0 && (
-            <Text style={[typography.caption, { color: colors.textSecondary, marginTop: spacing.xs }]}>
+            <Text
+              style={[typography.caption, { color: colors.textSecondary, marginTop: spacing.xs }]}
+            >
               ≈ {computedQuantity} {t('order.shares')}
             </Text>
           )}
@@ -145,14 +202,26 @@ export function OrderForm({
       {/* Price input for LIMIT orders */}
       {orderType === 'LIMIT' && (
         <View style={{ marginBottom: spacing.md }}>
-          <Text style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}>
+          <Text
+            style={[typography.caption, { color: colors.textSecondary, marginBottom: spacing.xs }]}
+          >
             {t('order.price')}
           </Text>
           <TextInput
             value={price}
             onChangeText={onPriceChange}
             keyboardType="decimal-pad"
-            style={[styles.input, { backgroundColor: colors.field, borderColor: colors.border, borderRadius: radius.input, color: colors.text, ...typography.body, padding: spacing.lg }]}
+            style={[
+              styles.input,
+              {
+                backgroundColor: colors.field,
+                borderColor: colors.border,
+                borderRadius: radius.input,
+                color: colors.text,
+                ...typography.body,
+                padding: spacing.lg,
+              },
+            ]}
             placeholder={lastPrice.toString()}
             placeholderTextColor={colors.textSecondary}
             accessibilityLabel={t('order.price')}
@@ -162,10 +231,29 @@ export function OrderForm({
 
       {/* Order summary */}
       {computedQuantity > 0 && (
-        <View style={[styles.summary, { backgroundColor: colors.surface2, borderRadius: radius.input, padding: spacing.md, marginBottom: spacing.md }]}>
-          <SummaryRow label={side === 'BUY' ? t('order.buy') : t('order.sell')} value={side === 'BUY' ? t('order.buy') : t('order.sell')} />
-          <SummaryRow label={t('order.market')} value={orderType === 'MARKET' ? t('order.market') : t('order.limit')} />
-          <SummaryRow label={t('order.quantity')} value={`${computedQuantity} ${t('order.shares')}`} />
+        <View
+          style={[
+            styles.summary,
+            {
+              backgroundColor: colors.surface2,
+              borderRadius: radius.input,
+              padding: spacing.md,
+              marginBottom: spacing.md,
+            },
+          ]}
+        >
+          <SummaryRow
+            label={side === 'BUY' ? t('order.buy') : t('order.sell')}
+            value={side === 'BUY' ? t('order.buy') : t('order.sell')}
+          />
+          <SummaryRow
+            label={t('order.market')}
+            value={orderType === 'MARKET' ? t('order.market') : t('order.limit')}
+          />
+          <SummaryRow
+            label={t('order.quantity')}
+            value={`${computedQuantity} ${t('order.shares')}`}
+          />
           {orderType === 'LIMIT' && price && (
             <SummaryRow label={t('order.limitPrice')} value={formatCurrency(Number(price))} />
           )}
@@ -175,7 +263,16 @@ export function OrderForm({
 
       {/* Error message */}
       {error && (
-        <Text style={[typography.caption, { color: colors.negative, marginBottom: spacing.md, textAlign: 'center' }]}>
+        <Text
+          style={[
+            typography.caption,
+            {
+              color: colors.negative,
+              marginBottom: spacing.md,
+              textAlign: 'center',
+            },
+          ]}
+        >
           {t(error)}
         </Text>
       )}
@@ -199,7 +296,9 @@ export function OrderForm({
         {isSubmitting ? (
           <ActivityIndicator color="#FFFFFF" />
         ) : (
-          <Text style={[typography.body, { color: '#FFFFFF', fontWeight: '600', textAlign: 'center' }]}>
+          <Text
+            style={[typography.body, { color: '#FFFFFF', fontWeight: '600', textAlign: 'center' }]}
+          >
             {t('order.submit')}
           </Text>
         )}
@@ -208,7 +307,17 @@ export function OrderForm({
   );
 }
 
-function ToggleButton({ label, active, onPress, activeColor }: { label: string; active: boolean; onPress: () => void; activeColor: string }) {
+function ToggleButton({
+  label,
+  active,
+  onPress,
+  activeColor,
+}: {
+  label: string;
+  active: boolean;
+  onPress: () => void;
+  activeColor: string;
+}) {
   const { colors, spacing, typography, radius } = useTheme();
 
   return (
@@ -225,7 +334,16 @@ function ToggleButton({ label, active, onPress, activeColor }: { label: string; 
       accessibilityRole="tab"
       accessibilityState={{ selected: active }}
     >
-      <Text style={[typography.sm, { color: active ? '#FFFFFF' : colors.textSecondary, fontWeight: active ? '600' : '400', textAlign: 'center' }]}>
+      <Text
+        style={[
+          typography.sm,
+          {
+            color: active ? '#FFFFFF' : colors.textSecondary,
+            fontWeight: active ? '600' : '400',
+            textAlign: 'center',
+          },
+        ]}
+      >
         {label}
       </Text>
     </Pressable>
@@ -238,7 +356,9 @@ function SummaryRow({ label, value, bold }: { label: string; value: string; bold
   return (
     <View style={[styles.summaryRow, { marginBottom: spacing.xs }]}>
       <Text style={[typography.caption, { color: colors.textSecondary }]}>{label}</Text>
-      <Text style={[typography.sm, { color: colors.text, fontWeight: bold ? '600' : '400' }]}>{value}</Text>
+      <Text style={[typography.sm, { color: colors.text, fontWeight: bold ? '600' : '400' }]}>
+        {value}
+      </Text>
     </View>
   );
 }
@@ -248,6 +368,10 @@ const styles = StyleSheet.create({
   toggleButton: { flex: 1 },
   input: { borderWidth: 1 },
   summary: {},
-  summaryRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   submitButton: {},
 });

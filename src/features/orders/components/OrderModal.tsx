@@ -1,27 +1,26 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  View,
-  Text,
+  Keyboard,
   Modal,
   Pressable,
-  StyleSheet,
   ScrollView,
+  StyleSheet,
+  Text,
   TextInput,
-  Keyboard,
-  Platform,
+  View
 } from 'react-native';
-import { Instrument, OrderSide, OrderType } from '../../../types/api';
-import { useTheme } from '../../../theme/useTheme';
-import { useTranslation } from '../../../i18n/useTranslation';
-import { OrderResult } from './OrderResult';
-import { useCreateOrder } from '../hooks/useCreateOrder';
-import { usePortfolio } from '../../portfolio/hooks/usePortfolio';
-import { aggregatePositions } from '../../portfolio/utils/aggregation';
-import { buildOrderPayload } from '../utils/payloads';
-import { formatCurrency } from '../../../utils/format';
 import { Avatar } from '../../../components/Avatar';
 import { SummaryRow } from '../../../components/SummaryRow';
+import { useTranslation } from '../../../i18n/useTranslation';
 import { useOrderHistoryStore } from '../../../store/orderHistory';
+import { useTheme } from '../../../theme/useTheme';
+import { Instrument, OrderSide, OrderType } from '../../../types/api';
+import { formatCurrency } from '../../../utils/format';
+import { usePortfolio } from '../../portfolio/hooks/usePortfolio';
+import { aggregatePositions } from '../../portfolio/utils/aggregation';
+import { useCreateOrder } from '../hooks/useCreateOrder';
+import { buildOrderPayload } from '../utils/payloads';
+import { OrderResult } from './OrderResult';
 
 interface OrderModalProps {
   visible: boolean;

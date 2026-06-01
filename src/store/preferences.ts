@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { safeStorage } from './storage';
 
 export type ThemePreference = 'system' | 'light' | 'dark';
@@ -23,6 +23,6 @@ export const usePreferencesStore = create<PreferencesState>()(
     {
       name: 'cocos-preferences',
       storage: createJSONStorage(() => safeStorage),
-    }
-  )
+    },
+  ),
 );

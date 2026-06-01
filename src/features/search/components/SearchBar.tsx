@@ -1,8 +1,7 @@
-import React from 'react';
-import { View, TextInput, Pressable, Text, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
-import { useTheme } from '../../../theme/useTheme';
 import { useTranslation } from '../../../i18n/useTranslation';
+import { useTheme } from '../../../theme/useTheme';
 
 interface SearchBarProps {
   value: string;
@@ -25,7 +24,16 @@ export function SearchBar({ value, onChangeText, onClear }: SearchBarProps) {
 
   return (
     <View style={[styles.wrapper, { paddingHorizontal: 22 }]}>
-      <View style={[styles.container, { backgroundColor: colors.field, borderColor: colors.border, borderRadius: radius.input }]}>
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: colors.field,
+            borderColor: colors.border,
+            borderRadius: radius.input,
+          },
+        ]}
+      >
         <SearchIcon color={colors.textMuted} />
         <TextInput
           value={value}
@@ -39,9 +47,20 @@ export function SearchBar({ value, onChangeText, onClear }: SearchBarProps) {
           accessibilityLabel={t('search.placeholder')}
         />
         {value.length > 0 && (
-          <Pressable onPress={onClear} style={styles.clearBtn} hitSlop={8} accessibilityRole="button" accessibilityLabel="Clear search">
+          <Pressable
+            onPress={onClear}
+            style={styles.clearBtn}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="Clear search"
+          >
             <Svg width={16} height={16} viewBox="0 0 18 18" fill="none">
-              <Path d="M4 4l10 10M14 4L4 14" stroke={colors.textMuted} strokeWidth={1.8} strokeLinecap="round" />
+              <Path
+                d="M4 4l10 10M14 4L4 14"
+                stroke={colors.textMuted}
+                strokeWidth={1.8}
+                strokeLinecap="round"
+              />
             </Svg>
           </Pressable>
         )}
@@ -52,7 +71,14 @@ export function SearchBar({ value, onChangeText, onClear }: SearchBarProps) {
 
 const styles = StyleSheet.create({
   wrapper: { paddingVertical: 4 },
-  container: { flexDirection: 'row', alignItems: 'center', gap: 10, borderWidth: 1, paddingHorizontal: 14, paddingVertical: 12 },
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
   input: { flex: 1, fontSize: 15, padding: 0 },
   clearBtn: { padding: 0 },
 });

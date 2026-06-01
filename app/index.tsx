@@ -1,17 +1,17 @@
-import React, { useState, useCallback } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { useCallback, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Instrument } from '../src/types/api';
-import { useTheme } from '../src/theme/useTheme';
-import { useTranslation } from '../src/i18n/useTranslation';
-import { SearchBar } from '../src/features/search/components/SearchBar';
-import { SearchResults } from '../src/features/search/components/SearchResults';
+import { SettingsHeader } from '../src/components/SettingsHeader';
+import { TabBar } from '../src/components/TabBar';
 import { InstrumentList } from '../src/features/instruments/components/InstrumentList';
-import { PortfolioList } from '../src/features/portfolio/components/PortfolioList';
 import { OrderHistoryList } from '../src/features/orders/components/OrderHistoryList';
 import { OrderModal } from '../src/features/orders/components/OrderModal';
-import { TabBar } from '../src/components/TabBar';
-import { SettingsHeader } from '../src/components/SettingsHeader';
+import { PortfolioList } from '../src/features/portfolio/components/PortfolioList';
+import { SearchBar } from '../src/features/search/components/SearchBar';
+import { SearchResults } from '../src/features/search/components/SearchResults';
+import { useTranslation } from '../src/i18n/useTranslation';
+import { useTheme } from '../src/theme/useTheme';
+import { Instrument } from '../src/types/api';
 
 type TabKey = 'instruments' | 'portfolio' | 'orders';
 

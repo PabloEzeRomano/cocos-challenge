@@ -1,5 +1,5 @@
-import React, { memo, useMemo } from 'react';
-import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';
+import { memo, useMemo } from 'react';
+import Svg, { Defs, LinearGradient, Path, Stop } from 'react-native-svg';
 import { useTheme } from '../theme/useTheme';
 
 interface BalanceChartProps {
@@ -91,7 +91,14 @@ export const BalanceChart = memo(function BalanceChart({
         </LinearGradient>
       </Defs>
       <Path d={area} fill={`url(#${gradId})`} />
-      <Path d={line} stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <Path
+        d={line}
+        stroke={color}
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </Svg>
   );
 });

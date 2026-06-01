@@ -1,11 +1,28 @@
-import { aggregatePositions, calculatePortfolioSummary } from '../features/portfolio/utils/aggregation';
+import {
+  aggregatePositions,
+  calculatePortfolioSummary,
+} from '../features/portfolio/utils/aggregation';
 import { PortfolioPosition } from '../types/api';
 
 describe('aggregatePositions', () => {
   it('aggregates multiple lots of same ticker', () => {
     const positions: PortfolioPosition[] = [
-      { instrument_id: 1, ticker: 'MOLA', quantity: 100, last_price: 50, close_price: 48, avg_cost_price: 40 },
-      { instrument_id: 1, ticker: 'MOLA', quantity: 200, last_price: 50, close_price: 48, avg_cost_price: 45 },
+      {
+        instrument_id: 1,
+        ticker: 'MOLA',
+        quantity: 100,
+        last_price: 50,
+        close_price: 48,
+        avg_cost_price: 40,
+      },
+      {
+        instrument_id: 1,
+        ticker: 'MOLA',
+        quantity: 200,
+        last_price: 50,
+        close_price: 48,
+        avg_cost_price: 45,
+      },
     ];
 
     const result = aggregatePositions(positions);
@@ -24,7 +41,14 @@ describe('aggregatePositions', () => {
 
   it('handles single position', () => {
     const positions: PortfolioPosition[] = [
-      { instrument_id: 2, ticker: 'YPFD', quantity: 50, last_price: 100, close_price: 95, avg_cost_price: 80 },
+      {
+        instrument_id: 2,
+        ticker: 'YPFD',
+        quantity: 50,
+        last_price: 100,
+        close_price: 95,
+        avg_cost_price: 80,
+      },
     ];
 
     const result = aggregatePositions(positions);
@@ -38,7 +62,14 @@ describe('aggregatePositions', () => {
 
   it('treats ARS as cash position', () => {
     const positions: PortfolioPosition[] = [
-      { instrument_id: 99, ticker: 'ARS', quantity: 50000, last_price: 1, close_price: 1, avg_cost_price: 99.9 },
+      {
+        instrument_id: 99,
+        ticker: 'ARS',
+        quantity: 50000,
+        last_price: 1,
+        close_price: 1,
+        avg_cost_price: 99.9,
+      },
     ];
 
     const result = aggregatePositions(positions);
@@ -51,8 +82,22 @@ describe('aggregatePositions', () => {
 
   it('handles multiple different tickers', () => {
     const positions: PortfolioPosition[] = [
-      { instrument_id: 1, ticker: 'MOLA', quantity: 100, last_price: 50, close_price: 48, avg_cost_price: 40 },
-      { instrument_id: 2, ticker: 'YPFD', quantity: 50, last_price: 100, close_price: 95, avg_cost_price: 80 },
+      {
+        instrument_id: 1,
+        ticker: 'MOLA',
+        quantity: 100,
+        last_price: 50,
+        close_price: 48,
+        avg_cost_price: 40,
+      },
+      {
+        instrument_id: 2,
+        ticker: 'YPFD',
+        quantity: 50,
+        last_price: 100,
+        close_price: 95,
+        avg_cost_price: 80,
+      },
     ];
 
     const result = aggregatePositions(positions);
@@ -63,8 +108,22 @@ describe('aggregatePositions', () => {
 describe('calculatePortfolioSummary', () => {
   it('calculates total portfolio value including cash', () => {
     const positions = aggregatePositions([
-      { instrument_id: 1, ticker: 'MOLA', quantity: 100, last_price: 50, close_price: 48, avg_cost_price: 40 },
-      { instrument_id: 99, ticker: 'ARS', quantity: 10000, last_price: 1, close_price: 1, avg_cost_price: 99.9 },
+      {
+        instrument_id: 1,
+        ticker: 'MOLA',
+        quantity: 100,
+        last_price: 50,
+        close_price: 48,
+        avg_cost_price: 40,
+      },
+      {
+        instrument_id: 99,
+        ticker: 'ARS',
+        quantity: 10000,
+        last_price: 1,
+        close_price: 1,
+        avg_cost_price: 99.9,
+      },
     ]);
 
     const summary = calculatePortfolioSummary(positions);
@@ -78,7 +137,14 @@ describe('calculatePortfolioSummary', () => {
 
   it('handles portfolio with losses', () => {
     const positions = aggregatePositions([
-      { instrument_id: 1, ticker: 'MOLA', quantity: 100, last_price: 30, close_price: 48, avg_cost_price: 40 },
+      {
+        instrument_id: 1,
+        ticker: 'MOLA',
+        quantity: 100,
+        last_price: 30,
+        close_price: 48,
+        avg_cost_price: 40,
+      },
     ]);
 
     const summary = calculatePortfolioSummary(positions);

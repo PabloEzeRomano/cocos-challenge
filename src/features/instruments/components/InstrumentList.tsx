@@ -1,16 +1,16 @@
 import { useCallback, useMemo, useState } from 'react';
-import { FlatList, RefreshControl, View, Text, Pressable, StyleSheet } from 'react-native';
+import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import { ErrorState } from '../../../components/ErrorState';
+import { useTranslation } from '../../../i18n/useTranslation';
+import { useWatchlistStore } from '../../../store/watchlist';
+import { useTheme } from '../../../theme/useTheme';
 import { Instrument } from '../../../types/api';
-import { useInstruments } from '../hooks/useInstruments';
+import { formatCurrency, formatPercentage } from '../../../utils/format';
 import { usePortfolio } from '../../portfolio/hooks/usePortfolio';
 import { aggregatePositions, calculatePortfolioSummary } from '../../portfolio/utils/aggregation';
+import { useInstruments } from '../hooks/useInstruments';
 import { InstrumentCard } from './InstrumentCard';
 import { InstrumentSkeleton } from './InstrumentSkeleton';
-import { ErrorState } from '../../../components/ErrorState';
-import { useTheme } from '../../../theme/useTheme';
-import { useTranslation } from '../../../i18n/useTranslation';
-import { formatCurrency, formatPercentage } from '../../../utils/format';
-import { useWatchlistStore } from '../../../store/watchlist';
 
 interface InstrumentListProps {
   onInstrumentPress: (instrument: Instrument) => void;

@@ -1,12 +1,12 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { FlatList } from 'react-native';
-import { Instrument } from '../../../types/api';
-import { useSearch } from '../hooks/useSearch';
-import { InstrumentCard } from '../../instruments/components/InstrumentCard';
-import { InstrumentSkeleton } from '../../instruments/components/InstrumentSkeleton';
 import { EmptyState } from '../../../components/EmptyState';
 import { ErrorState } from '../../../components/ErrorState';
 import { useTranslation } from '../../../i18n/useTranslation';
+import { Instrument } from '../../../types/api';
+import { InstrumentCard } from '../../instruments/components/InstrumentCard';
+import { InstrumentSkeleton } from '../../instruments/components/InstrumentSkeleton';
+import { useSearch } from '../hooks/useSearch';
 
 interface SearchResultsProps {
   query: string;
@@ -23,14 +23,15 @@ export function SearchResults({ query, onInstrumentPress }: SearchResultsProps) 
     ({ item, index }: { item: Instrument; index: number }) => (
       <InstrumentCard instrument={item} onPress={onInstrumentPress} showBorder={index > 0} />
     ),
-    [onInstrumentPress]
+    [onInstrumentPress],
   );
 
   const keyExtractor = useCallback((item: Instrument) => item.id.toString(), []);
 
   if (isLoading) return <InstrumentSkeleton />;
   if (isError) return <ErrorState onRetry={refetch} />;
-  if (results.length === 0) return <EmptyState title={t('search.empty')} subtitle={t('search.emptyHint')} />;
+  if (results.length === 0)
+    return <EmptyState title={t('search.empty')} subtitle={t('search.emptyHint')} />;
 
   return (
     <FlatList

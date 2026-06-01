@@ -1,5 +1,5 @@
-import React, { memo } from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { memo } from 'react';
+import { StyleSheet, Text } from 'react-native';
 import { useTheme } from '../theme/useTheme';
 
 interface ChangeTagProps {

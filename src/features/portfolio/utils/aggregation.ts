@@ -44,10 +44,7 @@ export function aggregatePositions(positions: PortfolioPosition[]): AggregatedPo
       continue;
     }
 
-    const totalCostBasis = lots.reduce(
-      (sum, lot) => sum + lot.quantity * lot.avg_cost_price,
-      0
-    );
+    const totalCostBasis = lots.reduce((sum, lot) => sum + lot.quantity * lot.avg_cost_price, 0);
     const weightedAvgCost = totalCostBasis / totalQuantity;
     const lastPrice = lots[0].last_price;
     const closePrice = lots[0].close_price;
@@ -89,9 +86,7 @@ export function calculatePortfolioSummary(positions: AggregatedPosition[]): Port
     }
   }
 
-  const totalPnL = positions
-    .filter((p) => !p.isCash)
-    .reduce((sum, p) => sum + p.pnl, 0);
+  const totalPnL = positions.filter((p) => !p.isCash).reduce((sum, p) => sum + p.pnl, 0);
 
   const totalReturnPct = totalCostBasis > 0 ? (totalPnL / totalCostBasis) * 100 : 0;
 

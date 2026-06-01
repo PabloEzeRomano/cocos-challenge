@@ -1,7 +1,7 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import { OrderSide, OrderStatus, OrderType } from '../types/api';
 import { safeStorage } from './storage';
-import { OrderSide, OrderType, OrderStatus } from '../types/api';
 
 export interface OrderHistoryEntry {
   id: string;
@@ -44,6 +44,6 @@ export const useOrderHistoryStore = create<OrderHistoryState>()(
     {
       name: 'cocos-order-history',
       storage: createJSONStorage(() => safeStorage),
-    }
-  )
+    },
+  ),
 );

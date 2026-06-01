@@ -18,7 +18,7 @@ export function generateSparklinePoints(
   ticker: string,
   closePrice: number,
   lastPrice: number,
-  count: number
+  count: number,
 ): number[] {
   const seed = seedFromTicker(ticker);
   const random = seededRandom(seed);

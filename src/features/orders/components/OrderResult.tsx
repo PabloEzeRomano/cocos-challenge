@@ -1,11 +1,10 @@
-import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { OrderResponse, OrderSide, OrderType } from '../../../types/api';
-import { useTheme } from '../../../theme/useTheme';
-import { useTranslation } from '../../../i18n/useTranslation';
 import { Badge } from '../../../components/Badge';
 import { SummaryRow } from '../../../components/SummaryRow';
+import { useTranslation } from '../../../i18n/useTranslation';
+import { useTheme } from '../../../theme/useTheme';
+import { OrderResponse, OrderSide, OrderType } from '../../../types/api';
 import { formatCurrency } from '../../../utils/format';
 
 interface OrderResultProps {
