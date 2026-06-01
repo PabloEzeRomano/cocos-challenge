@@ -8,13 +8,13 @@ App de trading en React Native para el mercado bursátil argentino. Muestra inst
 
 ```bash
 # Prerequisitos: Node.js >= 18, Expo Go en tu dispositivo
-npm install
-npm start
+yarn
+yarn start
 # Escaneá el QR con Expo Go o seguí las instrucciones para desarrollo local
 ```
 
 ```bash
-npm test  # 42 unit tests
+yarn test  # 42 unit tests
 ```
 
 ## Stack

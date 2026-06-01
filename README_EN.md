@@ -6,13 +6,13 @@ React Native trading app for the Argentine stock market. Displays instruments wi
 
 ```bash
 # Prerequisites: Node.js >= 18, Expo Go on your device
-npm install
-npm start
+yarn
+yarn start
 # Scan QR with Expo Go or follow the instructions for local development
 ```
 
 ```bash
-npm test  # 42 unit tests
+yarn test  # 42 unit tests
 ```
 
 ## Stack
