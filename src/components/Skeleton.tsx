@@ -5,19 +5,20 @@ import { useTheme } from '../theme/useTheme';
 interface SkeletonProps {
   width: number | string;
   height: number;
+  borderRadius?: number;
   style?: ViewStyle;
 }
 
 const canUseNativeDriver = Platform.OS !== 'web';
 
-export function Skeleton({ width, height, style }: SkeletonProps) {
-  const { colors, radius } = useTheme();
+export function Skeleton({ width, height, borderRadius = 5, style }: SkeletonProps) {
+  const { colors } = useTheme();
   const opacity = useRef(new Animated.Value(0.3)).current;
 
   useEffect(() => {
     const animation = Animated.loop(
       Animated.sequence([
-        Animated.timing(opacity, { toValue: 1, duration: 800, useNativeDriver: canUseNativeDriver }),
+        Animated.timing(opacity, { toValue: 0.7, duration: 800, useNativeDriver: canUseNativeDriver }),
         Animated.timing(opacity, { toValue: 0.3, duration: 800, useNativeDriver: canUseNativeDriver }),
       ])
     );
@@ -28,20 +29,9 @@ export function Skeleton({ width, height, style }: SkeletonProps) {
   return (
     <Animated.View
       style={[
-        styles.skeleton,
-        {
-          width: width as number,
-          height,
-          backgroundColor: colors.skeleton,
-          borderRadius: radius.sm,
-          opacity,
-        },
+        { width: width as number, height, backgroundColor: colors.surface2, borderRadius, opacity },
         style,
       ]}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  skeleton: {},
-});

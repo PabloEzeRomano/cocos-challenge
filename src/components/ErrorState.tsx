@@ -8,27 +8,25 @@ interface ErrorStateProps {
 }
 
 export function ErrorState({ onRetry }: ErrorStateProps) {
-  const { colors, spacing, typography, radius } = useTheme();
+  const { colors, radius } = useTheme();
   const { t } = useTranslation();
 
   return (
-    <View style={[styles.container, { padding: spacing.xl }]}>
-      <Text style={[typography.body, { color: colors.textSecondary, marginBottom: spacing.md }]}>
-        {t('common.error')}
-      </Text>
+    <View style={styles.container}>
+      <Text style={[styles.message, { color: colors.textSecondary }]}>{t('common.error')}</Text>
       <Pressable
         onPress={onRetry}
-        style={[styles.button, { backgroundColor: colors.accent, borderRadius: radius.md, paddingHorizontal: spacing.lg, paddingVertical: spacing.sm }]}
+        style={[styles.button, { backgroundColor: colors.accent, borderRadius: radius.button }]}
       >
-        <Text style={[typography.body, { color: '#FFFFFF', fontWeight: '600' }]}>
-          {t('common.retry')}
-        </Text>
+        <Text style={[styles.buttonText, { color: colors.accentText }]}>{t('common.retry')}</Text>
       </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  button: {},
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 },
+  message: { fontSize: 16, marginBottom: 16 },
+  button: { paddingHorizontal: 24, paddingVertical: 12 },
+  buttonText: { fontWeight: '600', fontSize: 15 },
 });
