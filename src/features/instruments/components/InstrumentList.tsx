@@ -24,10 +24,7 @@ export function InstrumentList({ onInstrumentPress }: InstrumentListProps) {
   const watchedTickers = useWatchlistStore((s) => s.tickers);
   const [showWatchlist, setShowWatchlist] = useState(false);
 
-  const allInstruments = useMemo(() =>
-    data?.filter((i) => i.type !== 'MONEDA') ?? [],
-    [data]
-  );
+  const allInstruments = useMemo(() => data?.filter((i) => i.type !== 'MONEDA') ?? [], [data]);
 
   const instruments = useMemo(() => {
     if (!showWatchlist) return allInstruments;
@@ -44,7 +41,7 @@ export function InstrumentList({ onInstrumentPress }: InstrumentListProps) {
     ({ item, index }: { item: Instrument; index: number }) => (
       <InstrumentCard instrument={item} onPress={onInstrumentPress} showBorder={index > 0} />
     ),
-    [onInstrumentPress]
+    [onInstrumentPress],
   );
 
   const keyExtractor = useCallback((item: Instrument) => item.id.toString(), []);
@@ -60,13 +57,40 @@ export function InstrumentList({ onInstrumentPress }: InstrumentListProps) {
       ListHeaderComponent={
         <View>
           {summary && (
-            <View style={[styles.valueBanner, { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: radius.card }]}>
+            <View
+              style={[
+                styles.valueBanner,
+                {
+                  backgroundColor: colors.surface,
+                  borderColor: colors.border,
+                  borderRadius: radius.card,
+                },
+              ]}
+            >
               <View>
-                <Text style={[styles.bannerLabel, { color: colors.textMuted }]}>{t('portfolio.totalValue')}</Text>
-                <Text style={[styles.bannerValue, { color: colors.text }]}>{formatCurrency(summary.totalValue)}</Text>
+                <Text style={[styles.bannerLabel, { color: colors.textMuted }]}>
+                  {t('portfolio.totalValue')}
+                </Text>
+                <Text style={[styles.bannerValue, { color: colors.text }]}>
+                  {formatCurrency(summary.totalValue)}
+                </Text>
               </View>
-              <View style={[styles.bannerPill, { backgroundColor: summary.totalPnL >= 0 ? colors.positiveBg : colors.negativeBg }]}>
-                <Text style={[styles.bannerPct, { color: summary.totalPnL >= 0 ? colors.positive : colors.negative }]}>
+              <View
+                style={[
+                  styles.bannerPill,
+                  {
+                    backgroundColor: summary.totalPnL >= 0 ? colors.positiveBg : colors.negativeBg,
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.bannerPct,
+                    {
+                      color: summary.totalPnL >= 0 ? colors.positive : colors.negative,
+                    },
+                  ]}
+                >
                   {formatPercentage(summary.totalReturnPct)}
                 </Text>
               </View>
@@ -77,24 +101,58 @@ export function InstrumentList({ onInstrumentPress }: InstrumentListProps) {
           <View style={styles.filterRow}>
             <Pressable
               onPress={() => setShowWatchlist(false)}
-              style={[styles.filterChip, { backgroundColor: !showWatchlist ? colors.accent : colors.surface, borderColor: colors.border }]}
+              accessibilityRole="tab"
+              accessibilityLabel={t('instruments.all')}
+              accessibilityState={{ selected: !showWatchlist }}
+              style={[
+                styles.filterChip,
+                {
+                  backgroundColor: !showWatchlist ? colors.accent : colors.surface,
+                  borderColor: colors.border,
+                },
+              ]}
             >
-              <Text style={[styles.filterText, { color: !showWatchlist ? colors.accentText : colors.textSecondary }]}>
+              <Text
+                style={[
+                  styles.filterText,
+                  {
+                    color: !showWatchlist ? colors.accentText : colors.textSecondary,
+                  },
+                ]}
+              >
                 {t('instruments.all')}
               </Text>
             </Pressable>
             <Pressable
               onPress={() => setShowWatchlist(true)}
-              style={[styles.filterChip, { backgroundColor: showWatchlist ? colors.accent : colors.surface, borderColor: colors.border }]}
+              accessibilityRole="tab"
+              accessibilityLabel={t('instruments.watchlist')}
+              accessibilityState={{ selected: showWatchlist }}
+              style={[
+                styles.filterChip,
+                {
+                  backgroundColor: showWatchlist ? colors.accent : colors.surface,
+                  borderColor: colors.border,
+                },
+              ]}
             >
-              <Text style={[styles.filterText, { color: showWatchlist ? colors.accentText : colors.textSecondary }]}>
-                ★ {t('instruments.watchlist')} {watchedTickers.length > 0 ? `(${watchedTickers.length})` : ''}
+              <Text
+                style={[
+                  styles.filterText,
+                  {
+                    color: showWatchlist ? colors.accentText : colors.textSecondary,
+                  },
+                ]}
+              >
+                ★ {t('instruments.watchlist')}{' '}
+                {watchedTickers.length > 0 ? `(${watchedTickers.length})` : ''}
               </Text>
             </Pressable>
           </View>
 
           <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>
-            {(showWatchlist ? t('instruments.watchlist') : t('instruments.title')).toUpperCase()} · {instruments.length}
+            {(showWatchlist ? t('instruments.watchlist') : t('instruments.title')).toUpperCase()} ·{' '}
+            {instruments.length}
           </Text>
         </View>
       }
@@ -108,13 +166,37 @@ export function InstrumentList({ onInstrumentPress }: InstrumentListProps) {
 }
 
 const styles = StyleSheet.create({
-  valueBanner: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, padding: 16, paddingHorizontal: 18, marginTop: 6, marginBottom: 16 },
+  valueBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    padding: 16,
+    paddingHorizontal: 18,
+    marginTop: 6,
+    marginBottom: 16,
+  },
   bannerLabel: { fontSize: 12.5, fontWeight: '500' },
-  bannerValue: { fontSize: 22, fontWeight: '700', letterSpacing: -0.44, marginTop: 2 },
+  bannerValue: {
+    fontSize: 22,
+    fontWeight: '700',
+    letterSpacing: -0.44,
+    marginTop: 2,
+  },
   bannerPill: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8 },
   bannerPct: { fontSize: 13, fontWeight: '700' },
   filterRow: { flexDirection: 'row', gap: 8, marginBottom: 16 },
-  filterChip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10, borderWidth: 1 },
+  filterChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
   filterText: { fontSize: 13, fontWeight: '600' },
-  sectionTitle: { fontSize: 13, fontWeight: '700', letterSpacing: 0.78, marginBottom: 6 },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 0.78,
+    marginBottom: 6,
+  },
 });

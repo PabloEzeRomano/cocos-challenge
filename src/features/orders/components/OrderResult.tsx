@@ -21,12 +21,26 @@ interface OrderResultProps {
 function CheckIcon({ color, size = 36 }: { color: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 16 16" fill="none">
-      <Path d="M3 8.5l3.2 3.2L13 5" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+      <Path
+        d="M3 8.5l3.2 3.2L13 5"
+        stroke={color}
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </Svg>
   );
 }
 
-export function OrderResult({ response, side, ticker, qty, orderType, total, onClose }: OrderResultProps) {
+export function OrderResult({
+  response,
+  side,
+  ticker,
+  qty,
+  orderType,
+  total,
+  onClose,
+}: OrderResultProps) {
   const { colors, radius } = useTheme();
   const { t } = useTranslation();
 
@@ -58,13 +72,32 @@ export function OrderResult({ response, side, ticker, qty, orderType, total, onC
       </Text>
 
       {/* Summary card */}
-      <View style={[styles.summaryCard, { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: radius.card }]}>
-        <SummaryRow label={t('order.status')} value={<Badge status={statusKey} label={statusLabel} />} />
+      <View
+        style={[
+          styles.summaryCard,
+          {
+            backgroundColor: colors.surface,
+            borderColor: colors.border,
+            borderRadius: radius.card,
+          },
+        ]}
+      >
+        <SummaryRow
+          label={t('order.status')}
+          value={<Badge status={statusKey} label={statusLabel} />}
+        />
         <SummaryRow label={t('order.orderId')} value={`#${response.id}`} />
-        <SummaryRow label={t('order.typeLabel')} value={orderType === 'MARKET' ? t('order.market') : t('order.limit')} />
+        <SummaryRow
+          label={t('order.typeLabel')}
+          value={orderType === 'MARKET' ? t('order.market') : t('order.limit')}
+        />
         <SummaryRow
           label={side === 'BUY' ? t('order.totalDebited') : t('order.totalCredited')}
-          value={<Text style={[styles.totalValue, { color: colors.text }]}>{formatCurrency(grandTotal)}</Text>}
+          value={
+            <Text style={[styles.totalValue, { color: colors.text }]}>
+              {formatCurrency(grandTotal)}
+            </Text>
+          }
           last
         />
       </View>
@@ -74,6 +107,8 @@ export function OrderResult({ response, side, ticker, qty, orderType, total, onC
       {/* Done button */}
       <Pressable
         onPress={onClose}
+        accessibilityRole="button"
+        accessibilityLabel={t('order.done')}
         style={[styles.doneBtn, { backgroundColor: colors.accent, borderRadius: radius.button }]}
       >
         <Text style={[styles.doneBtnText, { color: colors.accentText }]}>{t('order.done')}</Text>

@@ -16,6 +16,8 @@ export function ErrorState({ onRetry }: ErrorStateProps) {
       <Text style={[styles.message, { color: colors.textSecondary }]}>{t('common.error')}</Text>
       <Pressable
         onPress={onRetry}
+        accessibilityRole="button"
+        accessibilityLabel={t('common.retry')}
         style={[styles.button, { backgroundColor: colors.accent, borderRadius: radius.button }]}
       >
         <Text style={[styles.buttonText, { color: colors.accentText }]}>{t('common.retry')}</Text>
@@ -25,7 +27,12 @@ export function ErrorState({ onRetry }: ErrorStateProps) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
   message: { fontSize: 16, marginBottom: 16 },
   button: { paddingHorizontal: 24, paddingVertical: 12 },
   buttonText: { fontWeight: '600', fontSize: 15 },
