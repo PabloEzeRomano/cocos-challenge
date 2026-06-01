@@ -4,32 +4,18 @@ import { Skeleton } from '../../../components/Skeleton';
 import { useTheme } from '../../../theme/useTheme';
 
 export function InstrumentSkeleton() {
-  const { spacing, radius, colors } = useTheme();
+  const { colors } = useTheme();
 
   return (
-    <View style={{ padding: spacing.md }}>
-      {Array.from({ length: 6 }).map((_, i) => (
-        <View
-          key={i}
-          style={[
-            styles.card,
-            {
-              backgroundColor: colors.surface,
-              borderRadius: radius.md,
-              padding: spacing.md,
-              marginBottom: spacing.sm,
-            },
-          ]}
-        >
-          <View style={styles.left}>
-            <Skeleton width={50} height={16} />
-            <Skeleton width={100} height={12} style={{ marginTop: 4 }} />
+    <View style={styles.container}>
+      {Array.from({ length: 7 }).map((_, i) => (
+        <View key={i} style={[styles.row, i > 0 && { borderTopWidth: 1, borderTopColor: colors.border }]}>
+          <Skeleton width={40} height={40} borderRadius={12} />
+          <View style={styles.info}>
+            <Skeleton width="46%" height={13} />
+            <Skeleton width="64%" height={11} style={{ marginTop: 7 }} />
           </View>
-          <Skeleton width={60} height={24} />
-          <View style={styles.right}>
-            <Skeleton width={70} height={16} />
-            <Skeleton width={50} height={12} style={{ marginTop: 4 }} />
-          </View>
+          <Skeleton width={56} height={26} borderRadius={6} />
         </View>
       ))}
     </View>
@@ -37,7 +23,7 @@ export function InstrumentSkeleton() {
 }
 
 const styles = StyleSheet.create({
-  card: { flexDirection: 'row', alignItems: 'center' },
-  left: { flex: 1 },
-  right: { alignItems: 'flex-end', minWidth: 90 },
+  container: { paddingHorizontal: 22, paddingTop: 14 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 14 },
+  info: { flex: 1 },
 });
