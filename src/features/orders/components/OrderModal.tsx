@@ -1,10 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { View, Text, Modal, Pressable, StyleSheet, ScrollView, TextInput, Keyboard, Platform } from 'react-native';
 import { Instrument, OrderSide, OrderType } from '../../../types/api';
 import { useTheme } from '../../../theme/useTheme';
 import { useTranslation } from '../../../i18n/useTranslation';
 import { OrderResult } from './OrderResult';
 import { useCreateOrder } from '../hooks/useCreateOrder';
+import { usePortfolio } from '../../portfolio/hooks/usePortfolio';
+import { aggregatePositions } from '../../portfolio/utils/aggregation';
 import { buildOrderPayload } from '../utils/payloads';
 import { formatCurrency } from '../../../utils/format';
 import { Avatar } from '../../../components/Avatar';
@@ -31,7 +33,15 @@ export function OrderModal({ visible, instrument, onClose }: OrderModalProps) {
   const { t } = useTranslation();
   const mutation = useCreateOrder();
   const addOrder = useOrderHistoryStore((s) => s.addOrder);
+  const { data: portfolioData } = usePortfolio();
   const inputRef = useRef<TextInput>(null);
+
+  const cashBalance = useMemo(() => {
+    if (!portfolioData) return 0;
+    const positions = aggregatePositions(portfolioData);
+    const cash = positions.find((p) => p.isCash);
+    return cash?.marketValue ?? 0;
+  }, [portfolioData]);
 
   const [side, setSide] = useState<OrderSide>('BUY');
   const [orderType, setOrderType] = useState<OrderType>('MARKET');
@@ -73,7 +83,12 @@ export function OrderModal({ visible, instrument, onClose }: OrderModalProps) {
   const total = side === 'BUY' ? notional + commission : notional - commission;
 
   const isValid = qty > 0;
-  const hint = !isValid ? t('order.enterAmount') : '';
+  const insufficientFunds = side === 'BUY' && total > cashBalance && cashBalance > 0;
+  const hint = !isValid
+    ? t('order.enterAmount')
+    : insufficientFunds
+      ? `${t('order.insufficient')} · ${t('order.available')}: ${formatCurrency(cashBalance)}`
+      : '';
 
   const handleQuick = (val: number) => {
     setValue(String(val));
@@ -163,10 +178,13 @@ export function OrderModal({ visible, instrument, onClose }: OrderModalProps) {
 
               <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false} bounces={false} keyboardShouldPersistTaps="handled">
                 {/* Buy/Sell toggle */}
-                <View style={[styles.segmented, { backgroundColor: colors.surface2, borderRadius: 14 }]}>
+                <View style={[styles.segmented, { backgroundColor: colors.surface2, borderRadius: 14 }]} accessibilityRole="tablist">
                   {(['BUY', 'SELL'] as OrderSide[]).map((s) => (
                     <Pressable key={s} onPress={() => setSide(s)}
-                      style={[styles.segBtn, { borderRadius: 11, backgroundColor: side === s ? (s === 'BUY' ? colors.positive : colors.negative) : 'transparent' }]}>
+                      style={[styles.segBtn, { borderRadius: 11, backgroundColor: side === s ? (s === 'BUY' ? colors.positive : colors.negative) : 'transparent' }]}
+                      accessibilityRole="tab"
+                      accessibilityState={{ selected: side === s }}
+                      accessibilityLabel={s === 'BUY' ? t('order.buy') : t('order.sell')}>
                       <Text style={[styles.segText, { color: side === s ? (s === 'BUY' ? '#04150F' : '#fff') : colors.textSecondary }]}>
                         {s === 'BUY' ? t('order.buy') : t('order.sell')}
                       </Text>
@@ -175,10 +193,13 @@ export function OrderModal({ visible, instrument, onClose }: OrderModalProps) {
                 </View>
 
                 {/* Order type toggle */}
-                <View style={[styles.segmented, { backgroundColor: colors.surface2, borderRadius: 11, marginTop: 16 }]}>
+                <View style={[styles.segmented, { backgroundColor: colors.surface2, borderRadius: 11, marginTop: 16 }]} accessibilityRole="tablist">
                   {(['MARKET', 'LIMIT'] as OrderType[]).map((ot) => (
                     <Pressable key={ot} onPress={() => setOrderType(ot)}
-                      style={[styles.segBtn, { borderRadius: 8, backgroundColor: orderType === ot ? colors.bgElevated : 'transparent' }]}>
+                      style={[styles.segBtn, { borderRadius: 8, backgroundColor: orderType === ot ? colors.bgElevated : 'transparent' }]}
+                      accessibilityRole="tab"
+                      accessibilityState={{ selected: orderType === ot }}
+                      accessibilityLabel={ot === 'MARKET' ? t('order.market') : t('order.limit')}>
                       <Text style={[styles.segTextSm, { color: orderType === ot ? colors.text : colors.textMuted }]}>
                         {ot === 'MARKET' ? t('order.market') : t('order.limit')}
                       </Text>
@@ -297,6 +318,9 @@ export function OrderModal({ visible, instrument, onClose }: OrderModalProps) {
                     borderRadius: radius.button,
                     opacity: (!isValid || mutation.isPending) ? 0.45 : 1,
                   }]}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${side === 'BUY' ? t('order.buy') : t('order.sell')} ${qty} ${shares} of ${instrument.ticker} for ${formatCurrency(total)}`}
+                  accessibilityState={{ disabled: !isValid || mutation.isPending }}
                 >
                   <Text style={[styles.submitText, { color: side === 'BUY' ? '#04150F' : '#fff' }]}>
                     {mutation.isPending ? t('order.sending') : `${side === 'BUY' ? t('order.buy') : t('order.sell')} ${instrument.ticker}`}
